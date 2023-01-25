@@ -1,1 +1,5 @@
-
+numpy
+pandas
+streamlit
+Pillow
+pytesseract
