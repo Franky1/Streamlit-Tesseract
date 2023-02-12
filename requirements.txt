@@ -1,5 +1,5 @@
 numpy
-pandas
 streamlit
 Pillow
+opencv-python-headless
 pytesseract

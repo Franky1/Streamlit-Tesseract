@@ -1,0 +1,9 @@
+wheel
+setuptools
+poetry
+autopep8
+black
+flake8
+mypy
+jupyter
+jupyterlab
