@@ -3,3 +3,6 @@ streamlit
 Pillow
 opencv-python-headless
 pytesseract
+pdf2image
+imutils
+scipy

@@ -5,13 +5,12 @@ Streamlit demo project with Tesseract running on Streamlit Cloud.
 ## App Usage
 
 1. Upload an image with text on it
-2. Set the language
-3. Set the OCR Engine mode (if needed)
-4. Set the Page segmentation mode (if needed)
-5. Select the image preprocessing (if needed) and check the result in the preview
-6. Run the OCR and check the result in the text preview
-7. Adjust the settings or image preprocessing and run the OCR again (if needed)
-8. Download the result as a text file
+2. Select the language
+3. Set the Page segmentation mode (if needed)
+4. Select the image preprocessing (if needed) and check the result in the preview
+5. Run the OCR and check the result in the text preview
+6. Adjust the settings or image preprocessing and run the OCR again (if needed)
+7. Download the result as a text file
 
 ## Developer Usage
 
@@ -25,6 +24,12 @@ Streamlit demo project with Tesseract running on Streamlit Cloud.
   - <https://tesseract-ocr.github.io/>
 - pytesseract Documentation
   - <https://github.com/madmaze/pytesseract>
+- OCR with Tesseract
+  - <https://nanonets.com/blog/ocr-with-tesseract/>
+
+### pdf2image
+
+<https://github.com/Belval/pdf2image>
 
 ### OpenCV
 
@@ -45,19 +50,47 @@ The following resources are helpful to understand the image preprocessing option
 - OCR in Python Tutorials
   - <https://www.youtube.com/watch?v=tQGgGY8mTP0&list=PL2VXyKi-KpYuTAZz__9KVl1jQz74bDG7i>
 
+### Image Rotation
+
+#### opencv
+
+```python
+import cv2
+(h, w) = image.shape[:2]
+center = (w // 2, h // 2)
+M = cv2.getRotationMatrix2D(center, angle, 1)
+rotated = cv2.warpAffine(image, M, (w, h))
+```
+
+#### imutils
+
+```python
+import imutils
+rotate = imutils.rotate_bound(image, angle)
+```
+
+#### scipy
+
+```python
+from scipy.ndimage import rotate as rotate_image
+rotated_img1 = rotate_image(img,90)
+```
+
 ---
 
 ## ToDo
 
-- [ ] Test it locally with Docker
+- [x] Test it locally with Docker
 - [x] Add OpenCV preprocessing of the image
-- [ ] Add more OpenCV preprocessing fine-tuning options
+- [ ] Add more OpenCV preprocessing options for cropping, rotation, etc.
+- [ ] Add two column design
+- [ ] Add import of pdf files with pdf2image
 - [x] Add more error handling
 - [x] Add caching to speed up the app
-- [ ] Add a progress bar
-- [ ] Add more languages
+- [x] Add a progress bar
+- [x] Add more languages
 - [ ] Test it on Streamlit Cloud
 
 ## Status
 
-> Work in Progress - Not finished yet - 11.02.2023
+> Work in Progress - Not finished yet - 12.02.2023

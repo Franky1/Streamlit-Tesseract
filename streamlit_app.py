@@ -1,105 +1,17 @@
-import shutil
-
-import cv2
-import numpy as np
 import pytesseract
 import streamlit as st
 
-import constants
+import helpers.constants as constants
+import helpers.opencv as opencv
+import helpers.pdfimage as pdfimage
+import helpers.tesseract as tesseract
 
-# change path if required / for mac os just comment this line
-pytesseract.pytesseract.tesseract_cmd = r'/usr/bin/tesseract'
-
-# search for tesseract binary in path
-@st.cache_resource
-def find_tesseract_binary():
-    return shutil.which("tesseract")
+pytesseract.pytesseract.tesseract_cmd = None
 
 # set tesseract path
 @st.cache_resource
-def set_tesseract_path(path):
-    pytesseract.pytesseract.tesseract_cmd = path
-
-# make numpy array from image
-@st.cache_data
-def load_image(image_file):
-    # img = cv2.imread(image_file)
-    # return np.array(img)
-    file_bytes = np.asarray(bytearray(image_file.read()), dtype=np.uint8)
-    return cv2.imdecode(file_bytes, 1)
-
-# opencv preprocessing grayscale
-@st.cache_data
-def grayscale(img):
-    return cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
-
-# opencv preprocessing noise removal
-@st.cache_data
-def remove_noise(img):
-    return cv2.medianBlur(img, 5)
-
-# opencv preprocessing denoising
-@st.cache_data
-def denoising(img, strength=10):
-    if len(img.shape) == 3:
-        noiseless_image = cv2.fastNlMeansDenoisingColored(img, None, strength, strength, 7, 21)
-    else:
-        noiseless_image = cv2.fastNlMeansDenoising(img, None, strength, 7, 21)
-    return noiseless_image
-
-# opencv preprocessing thresholding
-@st.cache_data
-def thresholding(img, threshold=128):
-    # FIXME: add handling for color images
-    # Convert the image to grayscale
-    if len(img.shape) == 3:
-        img = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
-    # Apply the threshold
-    _, img = cv2.threshold(img, threshold, 255, cv2.THRESH_BINARY)
-    return img
-
-    # # check if image is grayscale
-    # if len(img.shape) == 2:
-    #     return cv2.threshold(img, 0, 255, cv2.THRESH_BINARY + cv2.THRESH_OTSU)[1]
-    # # else:
-    # # Convert the image to HSV
-    # hsv = cv2.cvtColor(img, cv2.COLOR_BGR2HSV)
-
-    # # Define a range of colors to threshold
-    # lower_color = np.array([0, 50, 50])
-    # upper_color = np.array([10, 255, 255])
-
-    # # Threshold the image to get only the desired colors
-    # mask = cv2.inRange(hsv, lower_color, upper_color)
-    # thresholded_img = cv2.bitwise_and(img, img, mask=mask)
-    # return thresholded_img
-
-# opencv preprocessing dilation
-@st.cache_data
-def dilate(img):
-    kernel = np.ones((5, 5), np.uint8)
-    return cv2.dilate(img, kernel, iterations=1)
-
-# opencv preprocessing erosion
-@st.cache_data
-def erode(img):
-    kernel = np.ones((5, 5), np.uint8)
-    return cv2.erode(img, kernel, iterations=1)
-
-# opencv preprocessing opening
-@st.cache_data
-def opening(img):
-    kernel = np.ones((5, 5), np.uint8)
-    return cv2.morphologyEx(img, cv2.MORPH_OPEN, kernel)
-
-# opencv convert BGR to RGB
-@st.cache_data
-def convert_to_rgb(img):
-    # check if image is color
-    if len(img.shape) == 3:
-        return cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
-    else:
-        return img
+def set_tesseract_path(tesseract_path):
+    pytesseract.pytesseract.tesseract_cmd = tesseract_path
 
 # streamlit config
 st.set_page_config(page_title="Tesseract OCR - Optical Character Recognition", page_icon="📝", layout="wide", initial_sidebar_state="expanded")
@@ -113,38 +25,15 @@ This is a simple OCR demo app that can be used to extract text from images. Supp
 # {constants.flag_string}
 ''', unsafe_allow_html=True)
 
-with st.sidebar:
-    st.header("Tesseract OCR Settings")
-    language = st.selectbox(label="Select Language", options=list(constants.languages.values()), index=0)
-    language_short = list(constants.languages.keys())[list(constants.languages.values()).index(language)]
-    oem = st.selectbox(label="OCR Engine mode", options=constants.oem, index=3)
-    psm = st.selectbox(label="Page segmentation mode", options=constants.psm, index=3)
-    timeout = st.slider(label="Tesseract OCR timeout [sec]", min_value=1, max_value=60, value=10, step=1)
-    st.markdown('---')
-    st.header("Image Preprocessing")
-    st.write("Check the boxes below to apply preprocessing to the image before extracting text with Tesseract OCR. Preview the image after each preprocessing step.")
-    cGrayscale = st.checkbox(label="Grayscale", value=True)
-    cNoise = st.checkbox(label="Noise Removal", value=False)
-    cDenoising = st.checkbox(label="Denoising", value=False)
-    cDenoisingStrength = st.slider(label="Denoising Strength", min_value=1, max_value=40, value=10, step=1)
-    cThresholding = st.checkbox(label="Thresholding", value=False)
-    cThresholdLevel = st.slider(label="Threshold", min_value=0, max_value=255, value=128, step=1)
-    cDilation = st.checkbox(label="Dilation", value=False)
-    cErosion = st.checkbox(label="Erosion", value=False)
-    cOpening = st.checkbox(label="Opening", value=False)
-    st.markdown('''---
-# About
-## GitHub
-<https://github.com/Franky1/Streamlit-Tesseract>
-''', unsafe_allow_html=True)
-
-custom_oem_psm_config = rf'--oem {oem} --psm {psm}'
-
-st.write(f'Tesseract path: {find_tesseract_binary()}')
+# set tesseract binary path
+pytesseract.pytesseract.tesseract_cmd = tesseract.find_tesseract_binary()
+if not pytesseract.pytesseract.tesseract_cmd:
+    st.error("Tesseract binary not found in PATH. Please install Tesseract.")
+    st.stop()
 
 # check if tesseract is installed
 try:
-    version = pytesseract.get_tesseract_version()
+    tesseract_version = pytesseract.get_tesseract_version()
 except pytesseract.TesseractNotFoundError:
     st.error("TesseractNotFoundError: Tesseract is not installed. Please install Tesseract.")
     st.stop()
@@ -152,11 +41,45 @@ except Exception as e:
     st.error(f"Unexpected Exception: {e}")
     st.stop()
 else:
-    if version:
-        st.success(f"Tesseract Version {version} is installed.")
-    else:
+    if not tesseract_version:
         st.error("Tesseract is not installed. Please install Tesseract.")
         st.stop()
+
+with st.sidebar:
+    st.success(f"Tesseract Version **{tesseract_version}** is installed.")
+    st.header("Tesseract OCR Settings")
+    language = st.selectbox(label="Select Language", options=list(constants.languages_sorted.values()), index=constants.default_language_index)
+    language_short = list(constants.languages_sorted.keys())[list(constants.languages_sorted.values()).index(language)]
+    # FIXME: OEM option does not work in tesseract 4.1.1
+    # oem = st.selectbox(label="OCR Engine mode (not working)", options=constants.oem, index=3, disabled=True)
+    psm = st.selectbox(label="Page segmentation mode", options=constants.psm, index=3)
+    timeout = st.slider(label="Tesseract OCR timeout [sec]", min_value=1, max_value=60, value=10, step=1)
+    st.markdown('---')
+    st.header("Image Preprocessing")
+    st.write("Check the boxes below to apply preprocessing to the image.")
+    cGrayscale = st.checkbox(label="Grayscale", value=True)
+    # cNoise = st.checkbox(label="Noise Removal", value=False)
+    cDenoising = st.checkbox(label="Denoising", value=False)
+    cDenoisingStrength = st.slider(label="Denoising Strength", min_value=1, max_value=40, value=10, step=1)
+    cThresholding = st.checkbox(label="Thresholding", value=False)
+    cThresholdLevel = st.slider(label="Threshold Level", min_value=0, max_value=255, value=128, step=1)
+    # cDilation = st.checkbox(label="Dilation", value=False)
+    # cErosion = st.checkbox(label="Erosion", value=False)
+    # cOpening = st.checkbox(label="Opening", value=False)
+    st.markdown('''---
+# About
+## GitHub
+<https://github.com/Franky1/Streamlit-Tesseract>
+''', unsafe_allow_html=True)
+
+# get index of selected oem parameter
+# FIXME: OEM option does not work in tesseract 4.1.1
+# oem_index = constants.oem.index(oem)
+oem_index = 3
+# get index of selected psm parameter
+psm_index = constants.psm.index(psm)
+# create custom oem and psm config string
+custom_oem_psm_config = tesseract.get_tesseract_config(oem_index=oem_index, psm_index=psm_index)
 
 # check if installed languages are available
 installed_languages = list()
@@ -172,7 +95,7 @@ except Exception as e:
     st.error(f"Unexpected Exception: {e}")
     st.stop()
 else:
-    st.write(f"Installed Languages: {installed_languages}")
+    # st.write(f"Installed Languages: {installed_languages}")
     if language_short not in installed_languages:
         st.error(f'Selected language "{language}" is not installed. Please install language data.')
         st.stop()
@@ -183,44 +106,45 @@ uploaded_file = st.file_uploader("Upload Image", type=["png", "jpg", "jpeg", "bm
 
 if uploaded_file is not None:
     try:
-        # TODO: add more fine tuning options for image preprocessing
         # convert uploaded file to numpy array
-        image = load_image(uploaded_file)
+        image = opencv.load_image(uploaded_file)
         if cGrayscale:
-            image = grayscale(image)
-        if cNoise:
-            image = remove_noise(image)
+            image = opencv.grayscale(image)
+        # if cNoise:
+        #     image = opencv.remove_noise(image)
         if cDenoising:
-            image = denoising(image, strength=cDenoisingStrength)
+            image = opencv.denoising(image, strength=cDenoisingStrength)
         if cThresholding:
-            image = thresholding(image, threshold=cThresholdLevel)
-        if cDilation:
-            image = dilate(image)
-        if cErosion:
-            image = erode(image)
-        if cOpening:
-            image = opening(image)
+            image = opencv.thresholding(image, threshold=cThresholdLevel)
+        # if cDilation:
+        #     image = opencv.dilate(image)
+        # if cErosion:
+        #     image = opencv.erode(image)
+        # if cOpening:
+        #     image = opencv.opening(image)
         # always convert to RGB
-        image = convert_to_rgb(image)
+        image = opencv.convert_to_rgb(image)
     except Exception as e:
         st.error(f"Exception during Image Preprocessing (Probably you selected Threshold on a color image?): {e}")
         st.stop()
 
     # preview image
-    st.image(image, caption="Uploaded Image", width=500)
+    st.image(image, caption="Uploaded Image Preview", width=600)
 
     # add streamlit button
     if st.button("Extract Text"):
         # streamlit spinner
         with st.spinner("Extracting Text..."):
             try:
+                # st.info(f"Tesseract configuration: {custom_oem_psm_config}")
                 text = pytesseract.image_to_string(image=image,
                                             lang=language_short,
                                             output_type=pytesseract.Output.STRING,
                                             config=custom_oem_psm_config,
                                             timeout=timeout)
-            except pytesseract.TesseractError:
+            except pytesseract.TesseractError as e:
                 st.error("TesseractError: Tesseract reported an error during text extraction.")
+                st.error(f"Error Message: {e}")
                 st.stop()
             except pytesseract.TesseractNotFoundError:
                 st.error("TesseractNotFoundError: Tesseract is not installed. Please install Tesseract..")
@@ -233,7 +157,7 @@ if uploaded_file is not None:
                 st.stop()
             else:
                 # add streamlit subheader
-                st.subheader("Extracted Text")
+                # st.subheader("Extracted Text")
                 if text:
                     # add streamlit text area
                     st.text_area(label="Extracted Text", value=text, height=500)

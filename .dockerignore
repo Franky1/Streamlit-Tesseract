@@ -16,3 +16,6 @@ venv.bak/
 LICENSE
 *.md
 *.bak
+*.pdf
+*.jpg
+*.png

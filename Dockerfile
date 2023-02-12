@@ -16,8 +16,7 @@ RUN apt-get update \
     build-essential \
     software-properties-common \
     git \
-    python3-dev \
-    && rm -rf /var/lib/apt/lists/*
+    python3-dev
 
 WORKDIR /app
 
@@ -34,6 +33,7 @@ EXPOSE 8501
 COPY . .
 
 CMD ["streamlit", "run", "streamlit_app.py"]
+# CMD ["streamlit", "run", "helpers/pdfimage.py"]
 
 # Some docker commands see below:
 # docker build --progress=plain --tag tess:latest .

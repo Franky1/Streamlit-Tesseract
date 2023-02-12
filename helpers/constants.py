@@ -1,4 +1,5 @@
 #  all tesseract constants are defined here as dictionaries or lists
+import cv2
 
 languages = {
     "eng": "🇬🇧 English",
@@ -7,7 +8,21 @@ languages = {
     "deu": "🇩🇪 German",
     "ita": "🇮🇹 Italian",
     "por": "🇵🇹 Portuguese",
+    "ces": "🇨🇿 Czech",
+    "pol": "🇵🇱 Polish",
+    "nor": "🇳🇴 Norwegian",
+    "swe": "🇸🇪 Swedish",
+    "dan": "🇩🇰 Danish",
+    "ron": "🇷🇴 Romanian",
+    "tur": "🇹🇷 Turkish",
+    "hun": "🇭🇺 Hungarian",
+    "rus": "🇷🇺 Russian",
 }
+
+# sort languages by index
+languages_sorted = dict(sorted(languages.items(), key=lambda item: item[0]))
+# get index of english language as default
+default_language_index = list(languages_sorted.keys()).index('eng')
 
 flags = {
     "eng": "🇬🇧",
@@ -16,9 +31,20 @@ flags = {
     "deu": "🇩🇪",
     "ita": "🇮🇹",
     "por": "🇵🇹",
+    "ces": "🇨🇿",
+    "pol": "🇵🇱",
+    "nor": "🇳🇴",
+    "swe": "🇸🇪",
+    "dan": "🇩🇰",
+    "ron": "🇷🇴",
+    "tur": "🇹🇷",
+    "hun": "🇭🇺",
+    "rus": "🇷🇺",
 }
 
-flag_string = ' '.join(flags.values())
+# sort flags by index
+flags_sorted = dict(sorted(flags.items(), key=lambda item: item[0]))
+flag_string = ' '.join(flags_sorted.values())
 
 oem = [
     "Original Tesseract only",
@@ -43,3 +69,19 @@ psm = [
 "Sparse text with OSD.                                             ",
 "Raw line. Treat the image as a single text line.                  ",
 ]
+
+angles = {
+    0 : None,
+    90 : cv2.ROTATE_90_COUNTERCLOCKWISE,
+    180 : cv2.ROTATE_180,
+    270 : cv2.ROTATE_90_CLOCKWISE,
+}
+
+
+if __name__ == "__main__":
+    """This is a constants file, not meant to be run directly.
+    Only for testing purposes of this module."""
+    print(languages_sorted.keys())
+    print(flags_sorted.keys())
+    print(default_language_index)
+    print(angles[90])
