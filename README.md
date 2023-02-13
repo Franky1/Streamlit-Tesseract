@@ -6,11 +6,10 @@ Streamlit demo project with Tesseract running on Streamlit Cloud.
 
 1. Upload an image with text on it
 2. Select the language
-3. Set the Page segmentation mode (if needed)
-4. Select the image preprocessing (if needed) and check the result in the preview
-5. Run the OCR and check the result in the text preview
-6. Adjust the settings or image preprocessing and run the OCR again (if needed)
-7. Download the result as a text file
+3. Select the image preprocessing options (if needed) and check the result in the preview
+4. Run the OCR and check the result in the text preview
+5. Adjust the settings or image preprocessing and run the OCR again (if needed)
+6. Download the result as a text file or copy from the text preview
 
 ## Developer Usage
 
@@ -50,7 +49,31 @@ The following resources are helpful to understand the image preprocessing option
 - OCR in Python Tutorials
   - <https://www.youtube.com/watch?v=tQGgGY8mTP0&list=PL2VXyKi-KpYuTAZz__9KVl1jQz74bDG7i>
 
-### Image Rotation
+#### Grayscale Conversion
+
+```python
+import cv2
+gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
+
+# or
+coefficients = [1,0,0] # Gives blue channel all the weight
+# for standard gray conversion, coefficients = [0.114, 0.587, 0.299]
+m = np.array(coefficients).reshape((1,3))
+blue = cv2.transform(im, m)
+```
+
+#### Brightness and Contrast
+
+- CLAHE (Contrast Limited Adaptive Histogram Equalization)
+- <https://www.tutorialspoint.com/how-to-change-the-contrast-and-brightness-of-an-image-using-opencv-in-python>
+- <https://stackoverflow.com/questions/50474302/how-do-i-adjust-brightness-contrast-and-vibrance-with-opencv-python>
+- <https://stackoverflow.com/questions/32609098/how-to-fast-change-image-brightness-with-python-opencv>
+- <https://github.com/milahu/document-photo-auto-threshold>
+- <https://stackoverflow.com/questions/56905592/automatic-contrast-and-brightness-adjustment-of-a-color-photo-of-a-sheet-of-pape>
+- <https://stackoverflow.com/questions/39308030/how-do-i-increase-the-contrast-of-an-image-in-python-opencv>
+- <https://stackoverflow.com/questions/63243202/how-to-auto-adjust-contrast-and-brightness-of-a-scanned-image-with-opencv-python>
+
+#### Image Rotation
 
 #### opencv
 
@@ -82,9 +105,12 @@ rotated_img1 = rotate_image(img,90)
 
 - [x] Test it locally with Docker
 - [x] Add OpenCV preprocessing of the image
-- [ ] Add more OpenCV preprocessing options for cropping, rotation, etc.
+- [x] Add more OpenCV preprocessing options for rotation
+- [ ] Add more OpenCV preprocessing options for cropping
+- [ ] Add more OpenCV preprocessing options for brightness and contrast
+- [ ] Add non-destructive image rotation
 - [ ] Add two column design
-- [ ] Add import of pdf files with pdf2image
+- [x] Add import of pdf files with pdf2image
 - [x] Add more error handling
 - [x] Add caching to speed up the app
 - [x] Add a progress bar

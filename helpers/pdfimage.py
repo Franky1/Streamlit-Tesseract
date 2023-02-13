@@ -4,12 +4,12 @@ import pdf2image
 import streamlit as st
 
 
-st.set_page_config(page_title="pdf2image", page_icon="📝", layout="wide", initial_sidebar_state="collapsed")
+# st.set_page_config(page_title="pdf2image", page_icon="📝", layout="wide", initial_sidebar_state="collapsed")
 
 
 @st.cache_data
-def pdftoimage(pdf_file, page):
-    images = pdf2image.convert_from_bytes(pdf_file=pdf_file.read(), dpi=300, single_file=True, output_file=None, output_folder=None, timeout=10, first_page=page, )
+def pdftoimage(pdf_file, page=1):
+    images = pdf2image.convert_from_bytes(pdf_file=pdf_file.read(), dpi=300, single_file=True, output_file=None, output_folder=None, timeout=20, first_page=page)
     return images[0] if images else None
 
 # convert pillow image to opencv image

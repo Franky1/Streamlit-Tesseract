@@ -82,3 +82,20 @@ def convert_to_rgb(img):
         return cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
     else:
         return img
+
+# opencv rotate image in 90 degree steps
+@st.cache_data
+def rotate90(img, rotate=None):
+    if rotate is not None:
+        img = cv2.rotate(img, rotate)
+    return img
+
+# opencv rotate image in free degree steps
+@st.cache_data
+def rotate(img, angle=None):
+    if angle is not None:
+        height, width = img.shape[:2]
+        center = (width/2, height/2)
+        rotate_matrix = cv2.getRotationMatrix2D(center=center, angle=angle, scale=1)
+        img = cv2.warpAffine(src=img, M=rotate_matrix, dsize=(width, height), borderMode=cv2.BORDER_CONSTANT, borderValue=(255, 255, 255))
+    return img

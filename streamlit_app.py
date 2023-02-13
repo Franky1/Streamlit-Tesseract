@@ -1,5 +1,8 @@
+import numpy as np
 import pytesseract
 import streamlit as st
+from pdf2image.exceptions import (PDFInfoNotInstalledError, PDFPageCountError,
+                                PDFPopplerTimeoutError, PDFSyntaxError)
 
 import helpers.constants as constants
 import helpers.opencv as opencv
@@ -53,19 +56,19 @@ with st.sidebar:
     # FIXME: OEM option does not work in tesseract 4.1.1
     # oem = st.selectbox(label="OCR Engine mode (not working)", options=constants.oem, index=3, disabled=True)
     psm = st.selectbox(label="Page segmentation mode", options=constants.psm, index=3)
-    timeout = st.slider(label="Tesseract OCR timeout [sec]", min_value=1, max_value=60, value=10, step=1)
+    timeout = st.slider(label="Tesseract OCR timeout [sec]", min_value=1, max_value=60, value=20, step=1)
     st.markdown('---')
     st.header("Image Preprocessing")
     st.write("Check the boxes below to apply preprocessing to the image.")
     cGrayscale = st.checkbox(label="Grayscale", value=True)
-    # cNoise = st.checkbox(label="Noise Removal", value=False)
     cDenoising = st.checkbox(label="Denoising", value=False)
     cDenoisingStrength = st.slider(label="Denoising Strength", min_value=1, max_value=40, value=10, step=1)
     cThresholding = st.checkbox(label="Thresholding", value=False)
     cThresholdLevel = st.slider(label="Threshold Level", min_value=0, max_value=255, value=128, step=1)
-    # cDilation = st.checkbox(label="Dilation", value=False)
-    # cErosion = st.checkbox(label="Erosion", value=False)
-    # cOpening = st.checkbox(label="Opening", value=False)
+    cRotate90 = st.checkbox(label="Rotate in 90° steps", value=False)
+    angle90 = st.slider("Rotate rectangular [Degree]", min_value=0, max_value=270, value=0, step=90)
+    cRotateFree = st.checkbox(label="Rotate in free degrees", value=False)
+    angle = st.slider("Rotate freely [Degree]", min_value=-180, max_value=180, value=0, step=1)
     st.markdown('''---
 # About
 ## GitHub
@@ -100,29 +103,65 @@ else:
         st.error(f'Selected language "{language}" is not installed. Please install language data.')
         st.stop()
 
+# TODO: add two column layout for image preprocessing options and image preview
+
 # upload image
 st.subheader("Upload Image")
-uploaded_file = st.file_uploader("Upload Image", type=["png", "jpg", "jpeg", "bmp", "tif", "tiff"])
+uploaded_file = st.file_uploader("Upload Image or PDF", type=["png", "jpg", "jpeg", "bmp", "tif", "tiff", "pdf"])
 
 if uploaded_file is not None:
+    # check if uploaded file is pdf
+    if uploaded_file.name.lower().endswith(".pdf"):
+        try:
+            page = st.number_input("Select Page of PDF", min_value=1, max_value=100, value=1, step=1)
+            image = pdfimage.pdftoimage(uploaded_file, page=page)
+            if image is not None:
+                image = np.array(image) # convert pillow image to numpy array
+                image = pdfimage.img2opencv2(image)
+            else:
+                st.error("Invalid PDF page selected.")
+                st.stop()
+        except PDFInfoNotInstalledError as e:
+            st.error("PDFInfoNotInstalledError: PDFInfo is not installed?")
+            st.stop()
+        except PDFPageCountError as e:
+            st.error("PDFPageCountError: Could not determine number of pages in PDF.")
+            st.stop()
+        except PDFSyntaxError as e:
+            st.error("PDFSyntaxError: PDF is damaged/corrupted?")
+            st.stop()
+        except PDFPopplerTimeoutError as e:
+            st.error("PDFPopplerTimeoutError: PDF conversion timed out.")
+            st.stop()
+        except Exception as e:
+            st.error("Unknwon Exception during PDF conversion")
+            st.error(f"Error Message: {e}")
+            st.stop()
+    # else uploaded file is image file
+    else:
+        try:
+            # convert uploaded file to numpy array
+            image = opencv.load_image(uploaded_file)
+        except Exception as e:
+            st.error("Exception during Image Conversion")
+            st.error(f"Error Message: {e}")
+            st.stop()
     try:
-        # convert uploaded file to numpy array
-        image = opencv.load_image(uploaded_file)
         if cGrayscale:
             image = opencv.grayscale(image)
-        # if cNoise:
-        #     image = opencv.remove_noise(image)
         if cDenoising:
             image = opencv.denoising(image, strength=cDenoisingStrength)
         if cThresholding:
             image = opencv.thresholding(image, threshold=cThresholdLevel)
-        # if cDilation:
-        #     image = opencv.dilate(image)
-        # if cErosion:
-        #     image = opencv.erode(image)
-        # if cOpening:
-        #     image = opencv.opening(image)
-        # always convert to RGB
+        if cRotate90:
+            # convert angle to opencv2 enum
+            angle90 = constants.angles.get(angle90, None)
+            image = opencv.rotate90(image, rotate=angle90)
+        if cRotateFree:
+            image = opencv.rotate(image, angle=angle)
+        # TODO: add crop functions here
+        # if cCrop:
+        #     pass
         image = opencv.convert_to_rgb(image)
     except Exception as e:
         st.error(f"Exception during Image Preprocessing (Probably you selected Threshold on a color image?): {e}")
@@ -153,7 +192,8 @@ if uploaded_file is not None:
                 st.error("RuntimeError: Tesseract timed out during text extraction.")
                 st.stop()
             except Exception as e:
-                st.error(f"Unexpected Exception: {e}")
+                st.error("Unexpected Exception")
+                st.error(f"Error Message: {e}")
                 st.stop()
             else:
                 # add streamlit subheader
