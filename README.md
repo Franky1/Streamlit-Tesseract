@@ -108,8 +108,10 @@ rotated_img1 = rotate_image(img,90)
 - [x] Add more OpenCV preprocessing options for rotation
 - [ ] Add more OpenCV preprocessing options for cropping
 - [ ] Add more OpenCV preprocessing options for brightness and contrast
+- [ ] Add more OpenCV preprocessing options for image optimization
 - [ ] Add non-destructive image rotation
-- [ ] Add two column design
+- [ ] Add reset `default` button for sliders and checkboxes
+- [x] Add two column design
 - [x] Add import of pdf files with pdf2image
 - [x] Add more error handling
 - [x] Add caching to speed up the app

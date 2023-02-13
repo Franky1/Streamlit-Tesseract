@@ -17,16 +17,20 @@ def set_tesseract_path(tesseract_path):
     pytesseract.pytesseract.tesseract_cmd = tesseract_path
 
 # streamlit config
-st.set_page_config(page_title="Tesseract OCR - Optical Character Recognition", page_icon="📝", layout="wide", initial_sidebar_state="expanded")
+st.set_page_config(page_title="Tesseract OCR", page_icon="📝", layout="wide", initial_sidebar_state="expanded")
+
+# apply custom css
+with open('helpers/style.css') as css:
+    st.markdown(f'<style>{css.read()}</style>', unsafe_allow_html=True)
 
 # add streamlit title
 st.title("Tesseract OCR - Optical Character Recognition 📝")
 
-# add streamlit subheader
-st.markdown(f'''**Tesseract OCR** - Optical Character Recognition using Tesseract, OpenCV and Streamlit.<br>
-This is a simple OCR demo app that can be used to extract text from images. Supported languages see below.
-# {constants.flag_string}
-''', unsafe_allow_html=True)
+# add streamlit markdown text
+# st.markdown('''**Tesseract OCR** - Optical Character Recognition using Tesseract, OpenCV and Streamlit.<br>
+# This is a simple OCR demo app that can be used to extract text from images. Supported languages see below.
+# ''', unsafe_allow_html=True)
+st.markdown(f'''# {constants.flag_string}''')
 
 # set tesseract binary path
 pytesseract.pytesseract.tesseract_cmd = tesseract.find_tesseract_binary()
@@ -98,110 +102,115 @@ except Exception as e:
     st.error(f"Unexpected Exception: {e}")
     st.stop()
 else:
-    # st.write(f"Installed Languages: {installed_languages}")
     if language_short not in installed_languages:
         st.error(f'Selected language "{language}" is not installed. Please install language data.')
         st.stop()
 
-# TODO: add two column layout for image preprocessing options and image preview
+# two column layout for image preprocessing options and image preview
+col1, col2 = st.columns(spec=[2, 3], gap="large")
+image = None
 
-# upload image
-st.subheader("Upload Image")
-uploaded_file = st.file_uploader("Upload Image or PDF", type=["png", "jpg", "jpeg", "bmp", "tif", "tiff", "pdf"])
+with col1:
+    # upload image
+    st.subheader("Upload Image")
+    uploaded_file = st.file_uploader("Upload Image or PDF", type=["png", "jpg", "jpeg", "bmp", "tif", "tiff", "pdf"])
 
-if uploaded_file is not None:
-    # check if uploaded file is pdf
-    if uploaded_file.name.lower().endswith(".pdf"):
-        try:
-            page = st.number_input("Select Page of PDF", min_value=1, max_value=100, value=1, step=1)
-            image = pdfimage.pdftoimage(uploaded_file, page=page)
-            if image is not None:
-                image = np.array(image) # convert pillow image to numpy array
-                image = pdfimage.img2opencv2(image)
-            else:
-                st.error("Invalid PDF page selected.")
-                st.stop()
-        except PDFInfoNotInstalledError as e:
-            st.error("PDFInfoNotInstalledError: PDFInfo is not installed?")
-            st.stop()
-        except PDFPageCountError as e:
-            st.error("PDFPageCountError: Could not determine number of pages in PDF.")
-            st.stop()
-        except PDFSyntaxError as e:
-            st.error("PDFSyntaxError: PDF is damaged/corrupted?")
-            st.stop()
-        except PDFPopplerTimeoutError as e:
-            st.error("PDFPopplerTimeoutError: PDF conversion timed out.")
-            st.stop()
-        except Exception as e:
-            st.error("Unknwon Exception during PDF conversion")
-            st.error(f"Error Message: {e}")
-            st.stop()
-    # else uploaded file is image file
-    else:
-        try:
-            # convert uploaded file to numpy array
-            image = opencv.load_image(uploaded_file)
-        except Exception as e:
-            st.error("Exception during Image Conversion")
-            st.error(f"Error Message: {e}")
-            st.stop()
-    try:
-        if cGrayscale:
-            image = opencv.grayscale(image)
-        if cDenoising:
-            image = opencv.denoising(image, strength=cDenoisingStrength)
-        if cThresholding:
-            image = opencv.thresholding(image, threshold=cThresholdLevel)
-        if cRotate90:
-            # convert angle to opencv2 enum
-            angle90 = constants.angles.get(angle90, None)
-            image = opencv.rotate90(image, rotate=angle90)
-        if cRotateFree:
-            image = opencv.rotate(image, angle=angle)
-        # TODO: add crop functions here
-        # if cCrop:
-        #     pass
-        image = opencv.convert_to_rgb(image)
-    except Exception as e:
-        st.error(f"Exception during Image Preprocessing (Probably you selected Threshold on a color image?): {e}")
-        st.stop()
-
-    # preview image
-    st.image(image, caption="Uploaded Image Preview", width=600)
-
-    # add streamlit button
-    if st.button("Extract Text"):
-        # streamlit spinner
-        with st.spinner("Extracting Text..."):
+    if uploaded_file is not None:
+        # check if uploaded file is pdf
+        if uploaded_file.name.lower().endswith(".pdf"):
             try:
-                # st.info(f"Tesseract configuration: {custom_oem_psm_config}")
-                text = pytesseract.image_to_string(image=image,
-                                            lang=language_short,
-                                            output_type=pytesseract.Output.STRING,
-                                            config=custom_oem_psm_config,
-                                            timeout=timeout)
-            except pytesseract.TesseractError as e:
-                st.error("TesseractError: Tesseract reported an error during text extraction.")
-                st.error(f"Error Message: {e}")
+                page = st.number_input("Select Page of PDF", min_value=1, max_value=100, value=1, step=1)
+                image = pdfimage.pdftoimage(uploaded_file, page=page)
+                if image is not None:
+                    image = np.array(image) # convert pillow image to numpy array
+                    image = pdfimage.img2opencv2(image)
+                else:
+                    st.error("Invalid PDF page selected.")
+                    st.stop()
+            except PDFInfoNotInstalledError as e:
+                st.error("PDFInfoNotInstalledError: PDFInfo is not installed?")
                 st.stop()
-            except pytesseract.TesseractNotFoundError:
-                st.error("TesseractNotFoundError: Tesseract is not installed. Please install Tesseract..")
+            except PDFPageCountError as e:
+                st.error("PDFPageCountError: Could not determine number of pages in PDF.")
                 st.stop()
-            except RuntimeError:
-                st.error("RuntimeError: Tesseract timed out during text extraction.")
+            except PDFSyntaxError as e:
+                st.error("PDFSyntaxError: PDF is damaged/corrupted?")
+                st.stop()
+            except PDFPopplerTimeoutError as e:
+                st.error("PDFPopplerTimeoutError: PDF conversion timed out.")
                 st.stop()
             except Exception as e:
-                st.error("Unexpected Exception")
+                st.error("Unknwon Exception during PDF conversion")
                 st.error(f"Error Message: {e}")
                 st.stop()
-            else:
-                # add streamlit subheader
-                # st.subheader("Extracted Text")
-                if text:
-                    # add streamlit text area
-                    st.text_area(label="Extracted Text", value=text, height=500)
-                    # add streamlit download button for extracted text
-                    st.download_button(label="Download Extracted Text", data=text.encode("utf-8"), file_name="extract.txt", mime="text/plain")
+        # else uploaded file is image file
+        else:
+            try:
+                # convert uploaded file to numpy array
+                image = opencv.load_image(uploaded_file)
+            except Exception as e:
+                st.error("Exception during Image Conversion")
+                st.error(f"Error Message: {e}")
+                st.stop()
+        try:
+            if cGrayscale:
+                image = opencv.grayscale(image)
+            if cDenoising:
+                image = opencv.denoising(image, strength=cDenoisingStrength)
+            if cThresholding:
+                image = opencv.thresholding(image, threshold=cThresholdLevel)
+            if cRotate90:
+                # convert angle to opencv2 enum
+                angle90 = constants.angles.get(angle90, None)
+                image = opencv.rotate90(image, rotate=angle90)
+            if cRotateFree:
+                image = opencv.rotate(image, angle=angle)
+            # TODO: add crop functions here
+            # if cCrop:
+            #     pass
+            image = opencv.convert_to_rgb(image)
+        except Exception as e:
+            st.error(f"Exception during Image Preprocessing (Probably you selected Threshold on a color image?): {e}")
+            st.stop()
+
+with col2:
+    st.subheader("Image Preview")
+    if image is not None:
+        # preview image
+        st.image(image, caption="Uploaded Image Preview", use_column_width=True)
+
+        # add streamlit button
+        if st.button("Extract Text"):
+            # streamlit spinner
+            with st.spinner("Extracting Text..."):
+                try:
+                    # st.info(f"Tesseract configuration: {custom_oem_psm_config}")
+                    text = pytesseract.image_to_string(image=image,
+                                                lang=language_short,
+                                                output_type=pytesseract.Output.STRING,
+                                                config=custom_oem_psm_config,
+                                                timeout=timeout)
+                except pytesseract.TesseractError as e:
+                    st.error("TesseractError: Tesseract reported an error during text extraction.")
+                    st.error(f"Error Message: {e}")
+                    st.stop()
+                except pytesseract.TesseractNotFoundError:
+                    st.error("TesseractNotFoundError: Tesseract is not installed. Please install Tesseract..")
+                    st.stop()
+                except RuntimeError:
+                    st.error("RuntimeError: Tesseract timed out during text extraction.")
+                    st.stop()
+                except Exception as e:
+                    st.error("Unexpected Exception")
+                    st.error(f"Error Message: {e}")
+                    st.stop()
                 else:
-                    st.warning("No text was extracted.")
+                    # add streamlit subheader
+                    # st.subheader("Extracted Text")
+                    if text:
+                        # add streamlit text area
+                        st.text_area(label="Extracted Text", value=text, height=500)
+                        # add streamlit download button for extracted text
+                        st.download_button(label="Download Extracted Text", data=text.encode("utf-8"), file_name="extract.txt", mime="text/plain")
+                    else:
+                        st.warning("No text was extracted.")
