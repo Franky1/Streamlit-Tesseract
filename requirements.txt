@@ -1,8 +1,11 @@
 numpy
+pandas
 streamlit
+streamlit-ace
+streamlit-elements
 Pillow
 opencv-python-headless
 pytesseract
 pdf2image
-imutils
 scipy
+easyocr

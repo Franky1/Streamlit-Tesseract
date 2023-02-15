@@ -2,24 +2,27 @@ import cv2
 import numpy as np
 import pdf2image
 import streamlit as st
+from io import BytesIO
 
 
 # st.set_page_config(page_title="pdf2image", page_icon="📝", layout="wide", initial_sidebar_state="collapsed")
 
 
 @st.cache_data
-def pdftoimage(pdf_file, page=1):
+def pdftoimage(pdf_file: BytesIO, page: int=1) -> np.ndarray:
     images = pdf2image.convert_from_bytes(pdf_file=pdf_file.read(), dpi=300, single_file=True, output_file=None, output_folder=None, timeout=20, first_page=page)
     return images[0] if images else None
 
+
 # convert pillow image to opencv image
 @st.cache_data
-def img2opencv2(pil_image):
+def img2opencv2(pil_image: np.ndarray) -> np.ndarray:
     return cv2.cvtColor(pil_image, cv2.COLOR_RGB2BGR)
+
 
 # opencv preprocessing grayscale
 @st.cache_data
-def grayscale(img):
+def grayscale(img: np.ndarray) -> np.ndarray:
     return cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
 
 

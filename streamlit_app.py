@@ -8,12 +8,13 @@ import helpers.constants as constants
 import helpers.opencv as opencv
 import helpers.pdfimage as pdfimage
 import helpers.tesseract as tesseract
+import helpers.easy_ocr as easy_ocr
 
 pytesseract.pytesseract.tesseract_cmd = None
 
 # set tesseract path
 @st.cache_resource
-def set_tesseract_path(tesseract_path):
+def set_tesseract_path(tesseract_path: str):
     pytesseract.pytesseract.tesseract_cmd = tesseract_path
 
 # streamlit config
@@ -45,7 +46,8 @@ except pytesseract.TesseractNotFoundError:
     st.error("TesseractNotFoundError: Tesseract is not installed. Please install Tesseract.")
     st.stop()
 except Exception as e:
-    st.error(f"Unexpected Exception: {e}")
+    st.error("Unexpected Exception")
+    st.error(f"Error Message: {e}")
     st.stop()
 else:
     if not tesseract_version:
@@ -99,7 +101,8 @@ except pytesseract.TesseractNotFoundError:
     st.error("TesseractNotFoundError: Tesseract is not installed. Please install Tesseract..")
     st.stop()
 except Exception as e:
-    st.error(f"Unexpected Exception: {e}")
+    st.error("Unexpected Exception")
+    st.error(f"Error Message: {e}")
     st.stop()
 else:
     if language_short not in installed_languages:
@@ -152,6 +155,12 @@ with col1:
                 st.error("Exception during Image Conversion")
                 st.error(f"Error Message: {e}")
                 st.stop()
+
+        # TODO: add the advanced image preprocessing options here
+        # TODO: - add crop functions here
+        # TODO: - add contrast/brightness functions here
+        # TODO: - add selection of engine (tesseract, easyocr, etc.)
+
         try:
             if cGrayscale:
                 image = opencv.grayscale(image)
@@ -164,7 +173,7 @@ with col1:
                 angle90 = constants.angles.get(angle90, None)
                 image = opencv.rotate90(image, rotate=angle90)
             if cRotateFree:
-                image = opencv.rotate(image, angle=angle)
+                image = opencv.rotate_scipy(image, angle=angle, reshape=True)
             # TODO: add crop functions here
             # if cCrop:
             #     pass
@@ -208,9 +217,12 @@ with col2:
                     # add streamlit subheader
                     # st.subheader("Extracted Text")
                     if text:
+                        # TODO: move this to the whole page again
+                        # TODO: try Ace Editor for text area instead
                         # add streamlit text area
                         st.text_area(label="Extracted Text", value=text, height=500)
                         # add streamlit download button for extracted text
                         st.download_button(label="Download Extracted Text", data=text.encode("utf-8"), file_name="extract.txt", mime="text/plain")
                     else:
                         st.warning("No text was extracted.")
+                        st.stop()

@@ -32,12 +32,12 @@ EXPOSE 8501
 
 COPY . .
 
-CMD ["streamlit", "run", "streamlit_app.py"]
-# CMD ["streamlit", "run", "helpers/pdfimage.py"]
+# CMD ["streamlit", "run", "streamlit_app.py"]
+CMD ["streamlit", "run", "helpers/easy_ocr.py"]
 
 # Some docker commands see below:
-# docker build --progress=plain --tag tess:latest .
-# docker run -ti -p 8501:8501 --rm tess:latest /bin/bash
-# docker run -ti -p 8501:8501 --rm tess:latest
-# docker run -ti -p 8501:8501 -v ${pwd}:/app --rm tess:latest
-# docker run -ti -p 8501:8501 -v ${pwd}:/app --rm tess:latest /bin/bash
+# docker build --progress=plain --tag tesseract:latest .
+# docker run -ti -p 8501:8501 --rm tesseract:latest /bin/bash
+# docker run -ti -p 8501:8501 --rm tesseract:latest
+# docker run -ti -p 8501:8501 -v ${pwd}:/app --rm tesseract:latest
+# docker run -ti -p 8501:8501 -v ${pwd}:/app --rm tesseract:latest /bin/bash
