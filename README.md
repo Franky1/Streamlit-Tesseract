@@ -2,6 +2,10 @@
 
 Streamlit demo project with Tesseract running on Streamlit Cloud.
 
+## Status
+
+> Work in Progress - Not finished yet - 16.02.2023
+
 ## App Usage
 
 1. Upload an image with text on it
@@ -15,7 +19,36 @@ Streamlit demo project with Tesseract running on Streamlit Cloud.
 
 > tbd.
 
+## ToDo
+
+- [x] Test it locally with Docker
+- [x] Add OpenCV preprocessing of the image
+- [x] Add more OpenCV preprocessing options for rotation
+- [ ] Add more OpenCV preprocessing options for cropping
+- [ ] Add more OpenCV preprocessing options for brightness and contrast
+- [ ] Add more OpenCV preprocessing options for image optimization
+- [ ] Add non-destructive image rotation
+- [ ] Use Pillow for image preprocessing instead of OpenCV(?)
+- [ ] Add reset `default` button for sliders and checkboxes
+- [ ] Add Ace Editor for text preview
+- [ ] Try `streamlit-option-menu` component
+- [x] Add two column design
+- [x] Add import of pdf files with pdf2image
+- [x] Add more error handling
+- [x] Add caching to speed up the app
+- [x] Add a progress bar
+- [x] Add more languages
+- [ ] Add other OCR engines and test them
+- [ ] Add `easyocr` and test it
+- [ ] Add `keras_ocr` and test it
+- [ ] Test it on Streamlit Cloud
+
 ## Resources
+
+### Streamlit
+
+- streamlit-option-menu
+  - <https://github.com/victoryhb/streamlit-option-menu>
 
 ### Tesseract
 
@@ -45,6 +78,10 @@ OpenCV is used for image preprocessing before running OCR with Tesseract.
 - OCR in Python Tutorials
   - <https://www.youtube.com/watch?v=tQGgGY8mTP0&list=PL2VXyKi-KpYuTAZz__9KVl1jQz74bDG7i>
 
+### Pillow
+
+- <https://pillow.readthedocs.io/en/stable/>
+
 #### Grayscale Conversion
 
 ```python
@@ -72,6 +109,20 @@ blue = cv2.transform(im, m)
 #### Image Rotation
 
 Methods to rotate an image with different libraries.
+
+#### Pillow
+
+<https://pillow.readthedocs.io/en/stable/reference/Image.html#PIL.Image.Image.rotate>
+
+```python
+from PIL import Image
+with Image.open("hopper.jpg") as im:
+    # Rotate the image by 60 degrees counter clockwise
+    theta = 60
+    white = (255,255,255)
+    # Angle is in degrees counter clockwise
+    im_rotated = im.rotate(angle=theta, resample=Image.Resampling.BICUBIC, expand=1, fillcolor=white)
+```
 
 #### opencv
 
@@ -102,31 +153,3 @@ rotate = imutils.rotate_bound(image, angle)
 from scipy.ndimage import rotate as rotate_image
 rotated_img1 = rotate_image(input, angle, reshape, mode, cval)
 ```
-
----
-
-## ToDo
-
-- [x] Test it locally with Docker
-- [x] Add OpenCV preprocessing of the image
-- [x] Add more OpenCV preprocessing options for rotation
-- [ ] Add more OpenCV preprocessing options for cropping
-- [ ] Add more OpenCV preprocessing options for brightness and contrast
-- [ ] Add more OpenCV preprocessing options for image optimization
-- [ ] Add non-destructive image rotation
-- [ ] Add reset `default` button for sliders and checkboxes
-- [ ] Add Ace Editor for text preview
-- [x] Add two column design
-- [x] Add import of pdf files with pdf2image
-- [x] Add more error handling
-- [x] Add caching to speed up the app
-- [x] Add a progress bar
-- [x] Add more languages
-- [ ] Add other OCR engines and test them
-- [ ] Add `easyocr` and test it
-- [ ] Add `keras_ocr` and test it
-- [ ] Test it on Streamlit Cloud
-
-## Status
-
-> Work in Progress - Not finished yet - 15.02.2023
