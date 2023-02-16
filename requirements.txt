@@ -3,6 +3,7 @@ pandas
 streamlit
 streamlit-ace
 streamlit-elements
+streamlit-option-menu
 Pillow
 opencv-python-headless
 pytesseract
