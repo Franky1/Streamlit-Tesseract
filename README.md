@@ -49,6 +49,10 @@ Streamlit demo project with Tesseract running on Streamlit Cloud.
 
 - streamlit-option-menu
   - <https://github.com/victoryhb/streamlit-option-menu>
+- examples
+  - <https://medium.com/@siavashyasini/using-machine-learning-to-create-custom-color-palettes-acb4eeaa06aa>
+  - <https://github.com/syasini/sophisticated_palette>
+  - <https://medium.com/codex/create-a-multi-page-app-with-the-new-streamlit-option-menu-component-3e3edaf7e7ad>
 
 ### Tesseract
 
