@@ -41,6 +41,7 @@ Streamlit demo project with Tesseract running on Streamlit Cloud.
 - [ ] Add other OCR engines and test them
 - [ ] Add `easyocr` and test it
 - [ ] Add `keras_ocr` and test it
+- [ ] Add `ocrmypdf` and test it
 - [ ] Test it on Streamlit Cloud
 
 ## Resources
