@@ -21,6 +21,9 @@ Streamlit demo project with Tesseract running on Streamlit Cloud.
 
 ## ToDo
 
+- [ ] Update README
+- [ ] Update app
+- [ ] Cleanup of app and repo
 - [x] Test it locally with Docker
 - [x] Add OpenCV preprocessing of the image
 - [x] Add more OpenCV preprocessing options for rotation
