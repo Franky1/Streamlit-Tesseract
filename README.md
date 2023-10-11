@@ -15,10 +15,6 @@ Streamlit demo project with Tesseract running on Streamlit Cloud.
 5. Adjust the settings or image preprocessing and run the OCR again (if needed)
 6. Download the result as a text file or copy from the text preview
 
-## Developer Usage
-
-> tbd.
-
 ## ToDo
 
 - [ ] Update README
@@ -35,12 +31,9 @@ Streamlit demo project with Tesseract running on Streamlit Cloud.
 - [ ] Add reset `default` button for sliders and checkboxes
 - [ ] Add Ace Editor for text preview
 - [ ] Try `streamlit-option-menu` component
-- [x] Add two column design
 - [x] Add import of pdf files with pdf2image
-- [x] Add more error handling
 - [x] Add caching to speed up the app
 - [x] Add a progress bar
-- [x] Add more languages
 - [ ] Add other OCR engines and test them
 - [ ] Add `easyocr` and test it
 - [ ] Add `keras_ocr` and test it
