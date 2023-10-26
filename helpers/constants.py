@@ -17,6 +17,7 @@ languages = {
     "tur": "🇹🇷 Turkish",
     "hun": "🇭🇺 Hungarian",
     "rus": "🇷🇺 Russian",
+    "chi_sim": "🇨🇳 Chinese",
 }
 
 # sort languages by index
@@ -41,6 +42,7 @@ languages_easyocr = {
     "tur": "tr",
     "hun": "hu",
     "rus": "ru",
+    "chi_sim": "ch_sim",
 }
 
 flags = {
@@ -59,6 +61,7 @@ flags = {
     "tur": "🇹🇷",
     "hun": "🇭🇺",
     "rus": "🇷🇺",
+    "chi_sim": "🇨🇳",
 }
 
 # sort flags by index
