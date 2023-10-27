@@ -14,6 +14,7 @@ import controls.tesseract_controls as ts_controls
 import controls.image_processing_controls as im_controls
 import controls.upload_image_controls as up_controls
 import controls.image_preview_controls as preview_controls
+import controls.text_extraction_controls as txt_controls
 
 
 
@@ -79,7 +80,9 @@ with col1:
     image = up_controls.show_upload_image_controls()
 
 with col2:
-    preview_controls.show_image_preview_controls(image)
+    if image is not None:
+        preview_controls.show_image_preview_controls(image)    
+        txt_controls.show_text_extraction_contol(image)
 
 
 
