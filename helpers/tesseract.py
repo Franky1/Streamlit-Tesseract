@@ -2,6 +2,7 @@ import shutil
 import streamlit as st
 import pytesseract
 import yaml
+import helpers.constants as constants
 
 @st.cache(allow_output_mutation=True)
 def load_config():
@@ -66,6 +67,7 @@ def set_tesseract_cmd_and_check_installation() -> str:
         return None
     return tesseract_cmd
 
+
 def check_installed_languages(language_short):
     try:
         installed_languages = pytesseract.get_languages(config='')
@@ -85,7 +87,17 @@ def check_installed_languages(language_short):
         st.exception(e)
         st.stop()
 
-def extract_text_from_image(image, language_short, custom_oem_psm_config, timeout):
+
+def extract_text_from_image(image, language_short, psm, timeout):
+    # get index of selected oem parameter
+    # FIXME: OEM option does not work in tesseract 4.1.1
+    # oem_index = constants.oem.index(oem)
+    oem_index = 3
+    # get index of selected psm parameter
+    psm_index = constants.psm.index(psm)
+
+    custom_oem_psm_config = get_tesseract_config(oem_index=oem_index, psm_index=psm_index)
+
     try:
         text = pytesseract.image_to_string(image=image, lang=language_short, config=custom_oem_psm_config, timeout=timeout)
         return text
