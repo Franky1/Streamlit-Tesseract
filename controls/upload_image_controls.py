@@ -80,8 +80,9 @@ def show_upload_image_controls():
                 # if cCrop:
                 #     pass
                 image = opencv.convert_to_rgb(image)
+                return image
             except Exception as e:
                 st.error(f"Exception during Image Preprocessing (Probably you selected Threshold on a color image?): {e}")
                 st.stop()
 
-    return image
+    
