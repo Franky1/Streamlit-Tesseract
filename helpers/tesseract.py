@@ -4,7 +4,7 @@ import pytesseract
 import yaml
 import helpers.constants as constants
 
-@st.cache(allow_output_mutation=True)
+@st.cache_data
 def load_config():
     with open('configs/tesseract_config.yaml', 'r') as file:
         config = yaml.safe_load(file)

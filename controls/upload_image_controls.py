@@ -22,14 +22,15 @@ def show_upload_image_controls():
     angle = config['Angle']
 
     # upload image
-    st.subheader("Upload Image")
-    uploaded_file = st.file_uploader("Upload Image or PDF", type=["png", "jpg", "jpeg", "bmp", "tif", "tiff", "pdf"])
+    st.subheader("Загрузка изображения")
+    uploaded_file = st.file_uploader("Загрузите изображение или PDF", type=["png", "jpg", "jpeg", "bmp", "tif", "tiff", "pdf"])
+
 
     if uploaded_file is not None:
             # check if uploaded file is pdf
             if uploaded_file.name.lower().endswith(".pdf"):
                 try:
-                    page = st.number_input("Select Page of PDF", min_value=1, max_value=100, value=1, step=1)
+                    page = st.number_input("Выберите страницу PDF", min_value=1, max_value=100, value=1, step=1)
                     image = pdfimage.pdftoimage(uploaded_file, page=page)
                     if image is not None:
                         image = np.array(image) # convert pillow image to numpy array
