@@ -1,0 +1,11 @@
+tesseract:
+  language: eng
+  oem: 3
+  psm: 3
+  timeout: 5000
+  config_params:
+    - "hocr_char_boxes"
+  advanced_settings:
+    tessedit_char_whitelist: "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789"
+    tessedit_pageseg_mode: 1
+
