@@ -7,9 +7,6 @@ import streamlit as st
 import torch
 
 
-# st.set_page_config(page_title="EasyOCR", page_icon="📝", layout="wide", initial_sidebar_state="collapsed")
-
-
 @st.cache_resource
 def download_sample_image(url: str) -> np.ndarray:
     '''Download sample image from url with requests

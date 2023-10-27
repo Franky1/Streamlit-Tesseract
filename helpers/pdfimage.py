@@ -5,9 +5,6 @@ import streamlit as st
 from io import BytesIO
 
 
-# st.set_page_config(page_title="pdf2image", page_icon="📝", layout="wide", initial_sidebar_state="collapsed")
-
-
 @st.cache_data
 def pdftoimage(pdf_file: BytesIO, page: int=1) -> np.ndarray:
     images = pdf2image.convert_from_bytes(pdf_file=pdf_file.read(), dpi=300, single_file=True, output_file=None, output_folder=None, timeout=20, first_page=page)

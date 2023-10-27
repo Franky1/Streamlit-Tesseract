@@ -1,26 +1,23 @@
-import numpy as np
-import pytesseract
 import streamlit as st
+# streamlit config
+st.set_page_config(page_title="Local OCR", page_icon="📝", layout="wide", initial_sidebar_state="expanded")
+
+import numpy as np
 from pdf2image.exceptions import (PDFInfoNotInstalledError, PDFPageCountError,
                                 PDFPopplerTimeoutError, PDFSyntaxError)
-
 import helpers.constants as constants
 import helpers.opencv as opencv
 import helpers.pdfimage as pdfimage
 import helpers.tesseract as tesseract
 import helpers.easy_ocr as easy_ocr
+import controls.tesseract_controls as ts_controls
 
 
-# streamlit config
-st.set_page_config(page_title="Local OCR", page_icon="📝", layout="wide", initial_sidebar_state="expanded")
 
 
-# set tesseract binary path
-pytesseract.pytesseract.tesseract_cmd = tesseract.find_tesseract_binary()
-if not pytesseract.pytesseract.tesseract_cmd:
-    st.error("Tesseract binary not found in PATH. Please install Tesseract.")
-    st.stop()
-
+# Initialize st.session_state
+if 'tesseract_config' not in st.session_state:
+    st.session_state['tesseract_config'] = tesseract.load_config()['tesseract']
 
 # apply custom css
 with open('helpers/style.css') as css:
@@ -38,15 +35,22 @@ st.markdown(f'''# {constants.flag_string}''')
 
 
 with st.sidebar:
-    st.success(f"Tesseract Version **{tesseract.get_tesseract_version()}** is installed.")
-    st.header("Tesseract OCR Settings")
-    language = st.selectbox(label="Select Language", options=list(constants.languages_sorted.values()), index=constants.default_language_index)
-    language_short = list(constants.languages_sorted.keys())[list(constants.languages_sorted.values()).index(language)]
-    # FIXME: OEM option does not work in tesseract 4.1.1
-    # oem = st.selectbox(label="OCR Engine mode (not working)", options=constants.oem, index=3, disabled=True)
-    psm = st.selectbox(label="Page segmentation mode", options=constants.psm, index=3)
-    timeout = st.slider(label="Tesseract OCR timeout [sec]", min_value=1, max_value=60, value=20, step=1)
+
+    st.header("OCR Engine Selector")
+
+    ocr_selected_engine = st.selectbox(label="Select OCR Engine", options = list(['TesseractOCR', 'EasyOCR']), index=0)
+
+    st.write(ocr_selected_engine)
+
     st.markdown('---')
+
+    if (ocr_selected_engine == 'TesseractOCR'):
+        language, language_short, psm, timeout = ts_controls.show_controls()
+    elif (ocr_selected_engine == 'EasyOCR'):
+        st.write("EasyCOR is Selected but not Implemented Yet!!!")
+
+    st.markdown('---')
+
     st.header("Image Preprocessing")
     st.write("Check the boxes below to apply preprocessing to the image.")
     cGrayscale = st.checkbox(label="Grayscale", value=True)
@@ -58,12 +62,14 @@ with st.sidebar:
     angle90 = st.slider("Rotate rectangular [Degree]", min_value=0, max_value=270, value=0, step=90)
     cRotateFree = st.checkbox(label="Rotate in free degrees", value=False)
     angle = st.slider("Rotate freely [Degree]", min_value=-180, max_value=180, value=0, step=1)
+
     st.markdown('''---
 # About
 ## GitHub
 <https://github.com/Franky1/Streamlit-Tesseract>
 ''', unsafe_allow_html=True)
 
+# --- REFACTOR!!! --- START
 # get index of selected oem parameter
 # FIXME: OEM option does not work in tesseract 4.1.1
 # oem_index = constants.oem.index(oem)
@@ -74,7 +80,9 @@ psm_index = constants.psm.index(psm)
 custom_oem_psm_config = tesseract.get_tesseract_config(oem_index=oem_index, psm_index=psm_index)
 
 # check if installed languages are available
-installed_languages = tesseract.check_installed_languages(language_short, language)
+installed_languages = tesseract.check_installed_languages(language_short)
+
+# --- REFACTOR!!! --- END
 
 # two column layout for image preprocessing options and image preview
 col1, col2 = st.columns(spec=[2, 3], gap="large")
