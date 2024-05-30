@@ -22,7 +22,7 @@ languages = {
 # sort languages by index
 languages_sorted = dict(sorted(languages.items(), key=lambda item: item[0]))
 # get index of english language as default
-default_language_index = list(languages_sorted.keys()).index('eng')
+default_language_index = list(languages_sorted.keys()).index("eng")
 
 # easyocr uses different language codes, so we need to map them
 languages_easyocr = {
@@ -63,37 +63,37 @@ flags = {
 
 # sort flags by index
 flags_sorted = dict(sorted(flags.items(), key=lambda item: item[0]))
-flag_string = ' '.join(flags_sorted.values())
+flag_string = " ".join(flags_sorted.values())
 
 oem = [
     "Original Tesseract only",
     "Neural nets LSTM only  ",
     "Tesseract + LSTM       ",
-    "Default                "
+    "Default                ",
 ]
 
 psm = [
-"Orientation and script detection (OSD) only.                      ",
-"Automatic page segmentation with OSD.                             ",
-"Automatic page segmentation, but no OSD, or OCR. (not implemented)",
-"Fully automatic page segmentation, but no OSD. (Default)          ",
-"Assume a single column of text of variable sizes.                 ",
-"Assume a single uniform block of vertically aligned text.         ",
-"Assume a single uniform block of text.                            ",
-"Treat the image as a single text line.                            ",
-"Treat the image as a single word.                                 ",
-"Treat the image as a single word in a circle.                     ",
-"Treat the image as a single character.                            ",
-"Sparse text. Find as much text as possible in no particular order.",
-"Sparse text with OSD.                                             ",
-"Raw line. Treat the image as a single text line.                  ",
+    "Orientation and script detection (OSD) only.                      ",
+    "Automatic page segmentation with OSD.                             ",
+    "Automatic page segmentation, but no OSD, or OCR. (not implemented)",
+    "Fully automatic page segmentation, but no OSD. (Default)          ",
+    "Assume a single column of text of variable sizes.                 ",
+    "Assume a single uniform block of vertically aligned text.         ",
+    "Assume a single uniform block of text.                            ",
+    "Treat the image as a single text line.                            ",
+    "Treat the image as a single word.                                 ",
+    "Treat the image as a single word in a circle.                     ",
+    "Treat the image as a single character.                            ",
+    "Sparse text. Find as much text as possible in no particular order.",
+    "Sparse text with OSD.                                             ",
+    "Raw line. Treat the image as a single text line.                  ",
 ]
 
 angles = {
-    0 : None,
-    90 : cv2.ROTATE_90_CLOCKWISE,
-    180 : cv2.ROTATE_180,
-    270 : cv2.ROTATE_90_COUNTERCLOCKWISE,
+    0: None,
+    90: cv2.ROTATE_90_CLOCKWISE,
+    180: cv2.ROTATE_180,
+    270: cv2.ROTATE_90_COUNTERCLOCKWISE,
 }
 
 

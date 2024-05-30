@@ -4,9 +4,10 @@ streamlit
 streamlit-ace
 streamlit-elements
 streamlit-option-menu
-Pillow
+pillow
 opencv-python-headless
 pytesseract
 pdf2image
+imutils
 scipy
 easyocr

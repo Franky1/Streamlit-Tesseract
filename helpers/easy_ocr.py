@@ -6,15 +6,14 @@ import requests
 import streamlit as st
 import torch
 
-
 # st.set_page_config(page_title="EasyOCR", page_icon="📝", layout="wide", initial_sidebar_state="collapsed")
 
 
 @st.cache_resource
 def download_sample_image(url: str) -> np.ndarray:
-    '''Download sample image from url with requests
+    """Download sample image from url with requests
     params: url: url to download
-    '''
+    """
     response = requests.get(url)
     content = response.content
     array = np.frombuffer(content, dtype=np.uint8)
@@ -25,9 +24,9 @@ def download_sample_image(url: str) -> np.ndarray:
 
 @st.cache_resource
 def easyocr_reader(lang: str) -> easyocr.easyocr.Reader:
-    '''Create an easyocr reader object
+    """Create an easyocr reader object
     params: lang: language to use
-    '''
+    """
     if torch.cuda.is_available():
         return easyocr.Reader([lang], gpu=True)
     else:
@@ -35,44 +34,46 @@ def easyocr_reader(lang: str) -> easyocr.easyocr.Reader:
 
 
 @st.cache_data
-def easyocr_read(img: np.ndarray, _reader: easyocr.easyocr.Reader, detail: int=0):
-    '''Read text from image using easyocr
+def easyocr_read(img: np.ndarray, _reader: easyocr.easyocr.Reader, detail: int = 0):
+    """Read text from image using easyocr
     params: img: image to read
             reader: easyocr reader object
             detail: 0 for text only, 1 for verbose
-    '''
+    """
     return _reader.readtext(img, detail=detail)
 
 
 @st.cache_data
 def easyocr_get_dataframe_from_result(result: list) -> pd.DataFrame:
-    '''Get dataframe from easyocr verbose result
+    """Get dataframe from easyocr verbose result
     params: result: easyocr verbose result with detail=1
-    '''
-    return pd.DataFrame(result, columns=['box', 'text', 'confidence'])
+    """
+    return pd.DataFrame(result, columns=["box", "text", "confidence"])
 
 
 @st.cache_data
 def easyocr_get_text_list_from_result(result: list) -> list:
-    '''Get list of text from easyocr verbose result
+    """Get list of text from easyocr verbose result
     params: result: easyocr verbose result with detail=1
-    '''
+    """
     return [text for box, text, conf in result]
 
 
 @st.cache_data
 def easyocr_get_text_from_result(result: list) -> str:
-    '''Get text from easyocr verbose result
+    """Get text from easyocr verbose result
     params: result: easyocr verbose result with detail=1
-    '''
-    return '\r'.join([text for box, text, conf in result])
+    """
+    return "\r".join([text for box, text, conf in result])
 
 
 # Test the functions above with streamlit and easyocr
-if __name__ == '__main__':
-    st.title('EasyOCR')
-    reader = easyocr_reader(lang='en')
-    sample_image_url = 'https://raw.githubusercontent.com/JaidedAI/EasyOCR/master/examples/english.png'
+if __name__ == "__main__":
+    st.title("EasyOCR")
+    reader = easyocr_reader(lang="en")
+    sample_image_url = (
+        "https://raw.githubusercontent.com/JaidedAI/EasyOCR/master/examples/english.png"
+    )
     # load sample image from url to numpy array with cv2
     sample_image = download_sample_image(sample_image_url)
     st.image(sample_image, width=800)

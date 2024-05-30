@@ -4,6 +4,7 @@ poetry
 autopep8
 black
 flake8
+ruff
+uv
 mypy
 jupyter
-jupyterlab

@@ -1,4 +1,4 @@
-# Streamlit Tesseract Test
+# Streamlit Tesseract :mag_right: :page_facing_up:
 
 Streamlit demo project with Tesseract running on Streamlit Cloud.
 
@@ -15,13 +15,12 @@ Streamlit demo project with Tesseract running on Streamlit Cloud.
 5. Adjust the settings or image preprocessing and run the OCR again (if needed)
 6. Download the result as a text file or copy from the text preview
 
-## ToDo
+## ToDo :pencil:
 
 - [ ] Update README
 - [ ] Update app
 - [ ] Cleanup of app and repo
 - [x] Test it locally with Docker
-- [x] Add OpenCV preprocessing of the image
 - [x] Add more OpenCV preprocessing options for rotation
 - [ ] Add more OpenCV preprocessing options for cropping
 - [ ] Add more OpenCV preprocessing options for brightness and contrast
@@ -34,13 +33,25 @@ Streamlit demo project with Tesseract running on Streamlit Cloud.
 - [x] Add import of pdf files with pdf2image
 - [x] Add caching to speed up the app
 - [x] Add a progress bar
-- [ ] Add other OCR engines and test them
-- [ ] Add `easyocr` and test it
-- [ ] Add `keras_ocr` and test it
-- [ ] Add `ocrmypdf` and test it
 - [ ] Test it on Streamlit Cloud
 
-## Resources
+## Future Ideas :bulb:
+
+- Add other OCR engines and test them
+- Add `easyocr` and test it
+  - <https://github.com/JaidedAI/EasyOCR>
+- Try `tesserocr` instead of `pytesseract`
+  - <https://github.com/sirfz/tesserocr>
+- Add `PyMuPDF` and test it
+  - <https://github.com/pymupdf/PyMuPDF>
+- Add `ocrmypdf` and test it
+  - <https://github.com/ocrmypdf/OCRmyPDF>
+- Add `PaddleOCR` and test it
+  - <https://github.com/PaddlePaddle/PaddleOCR>
+- Add `keras-ocr` and test it
+  - <https://github.com/faustomorales/keras-ocr>
+
+## Resources :books:
 
 ### Streamlit
 
@@ -107,11 +118,11 @@ blue = cv2.transform(im, m)
 - <https://stackoverflow.com/questions/39308030/how-do-i-increase-the-contrast-of-an-image-in-python-opencv>
 - <https://stackoverflow.com/questions/63243202/how-to-auto-adjust-contrast-and-brightness-of-a-scanned-image-with-opencv-python>
 
-#### Image Rotation
+#### Image Rotation :arrows_counterclockwise:
 
 Methods to rotate an image with different libraries.
 
-#### Pillow
+#### ... with Pillow :arrows_counterclockwise:
 
 <https://pillow.readthedocs.io/en/stable/reference/Image.html#PIL.Image.Image.rotate>
 
@@ -125,7 +136,7 @@ with Image.open("hopper.jpg") as im:
     im_rotated = im.rotate(angle=theta, resample=Image.Resampling.BICUBIC, expand=1, fillcolor=white)
 ```
 
-#### opencv
+#### ... with OpenCV :arrows_counterclockwise:
 
 > destructive rotation, loses image data
 
@@ -137,7 +148,7 @@ M = cv2.getRotationMatrix2D(center, angle, 1)
 rotated = cv2.warpAffine(image, M, (w, h))
 ```
 
-#### imutils
+#### ... with imutils :arrows_counterclockwise:
 
 > non-destructive rotation, keeps image data
 
@@ -146,7 +157,7 @@ import imutils
 rotate = imutils.rotate_bound(image, angle)
 ```
 
-#### scipy
+#### ... with scipy :arrows_counterclockwise:
 
 > destructive or non-destructive rotation, can be chosen py parameter `reshape`
 

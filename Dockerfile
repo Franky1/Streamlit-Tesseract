@@ -1,4 +1,5 @@
-FROM python:3.9-slim
+# this base image seems to be quite similar to the streamlit cloud environment
+FROM python:3.10-slim-bullseye
 
 ENV PYTHONUNBUFFERED=1 \
     PYTHONDONTWRITEBYTECODE=1 \
@@ -10,13 +11,16 @@ ENV PYTHONUNBUFFERED=1 \
 
 # we need some build tools for installing additional python pip packages
 RUN apt-get update \
-    && apt-get install --yes --no-install-recommends \
+    && apt-get install --yes \
+    software-properties-common \
+    build-essential \
     gcc \
     g++ \
-    build-essential \
-    software-properties-common \
+    cmake \
     git \
-    python3-dev
+    curl \
+    python3-dev \
+    nano
 
 WORKDIR /app
 
@@ -29,6 +33,9 @@ COPY requirements.txt requirements.txt
 RUN pip install --no-cache-dir --upgrade -r requirements.txt
 
 EXPOSE 8501
+
+HEALTHCHECK --interval=1m --timeout=10s \
+    CMD curl --fail http://localhost:8501/_stcore/health
 
 COPY . .
 

@@ -1,0 +1,24 @@
+[tool.mypy]
+python_version = "3.10"
+show_error_codes = true
+strict = true
+
+# Below are the configuration settings for the tool "ruff".
+# It is a linter and used to check the code quality of the python code.
+# https://beta.ruff.rs/docs/
+# In vscode you can install the extension "ruff" to see the results.
+[tool.ruff]
+# exclude files from ruff analysis that are in .gitignore
+respect-gitignore = true
+# exclude some more folders for ruff analysis
+extend-exclude = [".devcontainer", ".venv"]
+# Allow lines to be as long as 160 characters.
+line-length = 160
+# Assume Python 3.10
+target-version = "py310"
+# indent with 4 spaces
+indent-width = 4
+
+[tool.ruff.lint.isort]
+force-single-line = true
+lines-after-imports = 2
