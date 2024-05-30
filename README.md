@@ -19,6 +19,7 @@ Streamlit demo project with Tesseract running on Streamlit Cloud.
 
 - [ ] Update README
 - [ ] Update app
+- [ ] Change layout to 3 columns(?)
 - [ ] Cleanup of app and repo
 - [x] Test it locally with Docker
 - [x] Add more OpenCV preprocessing options for rotation
@@ -31,7 +32,6 @@ Streamlit demo project with Tesseract running on Streamlit Cloud.
 - [ ] Add Ace Editor for text preview
 - [ ] Try `streamlit-option-menu` component
 - [x] Add import of pdf files with pdf2image
-- [x] Add caching to speed up the app
 - [x] Add a progress bar
 - [ ] Test it on Streamlit Cloud
 

@@ -6,6 +6,14 @@ import streamlit as st
 from scipy.ndimage import rotate as rotate_image
 
 
+angles = {
+    0: None,
+    90: cv2.ROTATE_90_CLOCKWISE,
+    180: cv2.ROTATE_180,
+    270: cv2.ROTATE_90_COUNTERCLOCKWISE,
+}
+
+
 # make numpy array from image
 @st.cache_data
 def load_image(image_file: BytesIO) -> np.ndarray:

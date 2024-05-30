@@ -39,12 +39,12 @@ HEALTHCHECK --interval=1m --timeout=10s \
 
 COPY . .
 
-# CMD ["streamlit", "run", "streamlit_app.py"]
-CMD ["streamlit", "run", "helpers/easy_ocr.py"]
+CMD ["streamlit", "run", "streamlit_app.py"]
+# CMD ["streamlit", "run", "helpers/easy_ocr.py"]
 
 # Some docker commands see below:
-# docker build --progress=plain --tag tesseract:latest .
-# docker run -ti -p 8501:8501 --rm tesseract:latest /bin/bash
-# docker run -ti -p 8501:8501 --rm tesseract:latest
-# docker run -ti -p 8501:8501 -v ${pwd}:/app --rm tesseract:latest
-# docker run -ti -p 8501:8501 -v ${pwd}:/app --rm tesseract:latest /bin/bash
+# docker build --progress=plain --tag streamlit-tesseract:latest .
+# docker run -ti -p 8501:8501 --rm streamlit-tesseract:latest /bin/bash
+# docker run -ti -p 8501:8501 --rm streamlit-tesseract:latest
+# docker run -ti -p 8501:8501 -v ${pwd}:/app --rm streamlit-tesseract:latest
+# docker run -ti -p 8501:8501 -v ${pwd}:/app --rm streamlit-tesseract:latest /bin/bash

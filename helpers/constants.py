@@ -1,5 +1,4 @@
-#  all tesseract constants are defined here as dictionaries or lists
-import cv2
+#  all application constants are defined here as dictionaries or lists
 
 languages = {
     "eng": "🇬🇧 English",
@@ -65,37 +64,6 @@ flags = {
 flags_sorted = dict(sorted(flags.items(), key=lambda item: item[0]))
 flag_string = " ".join(flags_sorted.values())
 
-oem = [
-    "Original Tesseract only",
-    "Neural nets LSTM only  ",
-    "Tesseract + LSTM       ",
-    "Default                ",
-]
-
-psm = [
-    "Orientation and script detection (OSD) only.                      ",
-    "Automatic page segmentation with OSD.                             ",
-    "Automatic page segmentation, but no OSD, or OCR. (not implemented)",
-    "Fully automatic page segmentation, but no OSD. (Default)          ",
-    "Assume a single column of text of variable sizes.                 ",
-    "Assume a single uniform block of vertically aligned text.         ",
-    "Assume a single uniform block of text.                            ",
-    "Treat the image as a single text line.                            ",
-    "Treat the image as a single word.                                 ",
-    "Treat the image as a single word in a circle.                     ",
-    "Treat the image as a single character.                            ",
-    "Sparse text. Find as much text as possible in no particular order.",
-    "Sparse text with OSD.                                             ",
-    "Raw line. Treat the image as a single text line.                  ",
-]
-
-angles = {
-    0: None,
-    90: cv2.ROTATE_90_CLOCKWISE,
-    180: cv2.ROTATE_180,
-    270: cv2.ROTATE_90_COUNTERCLOCKWISE,
-}
-
 
 if __name__ == "__main__":
     """This is a constants file, not meant to be run directly.
@@ -103,4 +71,3 @@ if __name__ == "__main__":
     print(languages_sorted.keys())
     print(flags_sorted.keys())
     print(default_language_index)
-    print(angles[90])

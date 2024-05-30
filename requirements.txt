@@ -10,4 +10,5 @@ pytesseract
 pdf2image
 imutils
 scipy
-easyocr
+# easyocr
+# PyMuPDF
