@@ -15,26 +15,26 @@ angles = {
 
 
 # make numpy array from image
-@st.cache_data
+@st.cache_data(show_spinner=False)
 def load_image(image_file: BytesIO) -> np.ndarray:
     file_bytes = np.asarray(bytearray(image_file.read()), dtype=np.uint8)
     return cv2.imdecode(file_bytes, 1)
 
 
 # opencv preprocessing grayscale
-@st.cache_data
+@st.cache_data(show_spinner=False)
 def grayscale(img: np.ndarray) -> np.ndarray:
     return cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
 
 
 # opencv preprocessing noise removal
-@st.cache_data
+@st.cache_data(show_spinner=False)
 def remove_noise(img: np.ndarray) -> np.ndarray:
     return cv2.medianBlur(img, 5)
 
 
 # opencv preprocessing denoising
-@st.cache_data
+@st.cache_data(show_spinner=False)
 def denoising(img: np.ndarray, strength: int = 10) -> np.ndarray:
     if len(img.shape) == 3:
         return cv2.fastNlMeansDenoisingColored(img, None, strength, strength, 7, 21)
@@ -43,7 +43,7 @@ def denoising(img: np.ndarray, strength: int = 10) -> np.ndarray:
 
 
 # opencv preprocessing thresholding
-@st.cache_data
+@st.cache_data(show_spinner=False)
 def thresholding(img: np.ndarray, threshold: int = 128) -> np.ndarray:
     # FIXME: add handling for color images
     # Convert the image to grayscale
@@ -71,28 +71,28 @@ def thresholding(img: np.ndarray, threshold: int = 128) -> np.ndarray:
 
 
 # opencv preprocessing dilation
-@st.cache_data
+@st.cache_data(show_spinner=False)
 def dilate(img: np.ndarray) -> np.ndarray:
     kernel = np.ones((5, 5), np.uint8)
     return cv2.dilate(img, kernel, iterations=1)
 
 
 # opencv preprocessing erosion
-@st.cache_data
+@st.cache_data(show_spinner=False)
 def erode(img: np.ndarray) -> np.ndarray:
     kernel = np.ones((5, 5), np.uint8)
     return cv2.erode(img, kernel, iterations=1)
 
 
 # opencv preprocessing opening
-@st.cache_data
+@st.cache_data(show_spinner=False)
 def opening(img: np.ndarray) -> np.ndarray:
     kernel = np.ones((5, 5), np.uint8)
     return cv2.morphologyEx(img, cv2.MORPH_OPEN, kernel)
 
 
 # opencv convert BGR to RGB
-@st.cache_data
+@st.cache_data(show_spinner=False)
 def convert_to_rgb(img: np.ndarray) -> np.ndarray:
     # check if image is color
     if len(img.shape) == 3:
@@ -101,7 +101,7 @@ def convert_to_rgb(img: np.ndarray) -> np.ndarray:
         return img
 
 
-@st.cache_data
+@st.cache_data(show_spinner=False)
 def rotate90(img, rotate: bool = None) -> np.ndarray:
     """Rotate the image by 90 degree steps.
     Uses the OpenCV rotate function."""
@@ -110,7 +110,7 @@ def rotate90(img, rotate: bool = None) -> np.ndarray:
     return img
 
 
-@st.cache_data
+@st.cache_data(show_spinner=False)
 def rotate(img: np.ndarray, angle: int = None) -> np.ndarray:
     """Rotate the image by free angle degrees.
     Uses the OpenCV warpAffine function. Rotation losses the image corners.
@@ -130,7 +130,7 @@ def rotate(img: np.ndarray, angle: int = None) -> np.ndarray:
     return img
 
 
-@st.cache_data
+@st.cache_data(show_spinner=False)
 def rotate_scipy(
     img: np.ndarray, angle: int = None, reshape: bool = True
 ) -> np.ndarray:
@@ -143,3 +143,19 @@ def rotate_scipy(
             input=img, angle=angle, reshape=reshape, mode="constant", cval=255
         )
     return img
+
+
+@st.cache_data(show_spinner=False)
+def crop(img: np.ndarray, left: int = 0, right: int = 0, top: int = 0, bottom: int = 0) -> np.ndarray:
+    """Crop the image from the left, right, top, and bottom.
+    param left: number of percent to crop from the left
+    param right: number of percent to crop from the right
+    param top: number of percent to crop from the top
+    param bottom: number of percent to crop from the bottom
+    """
+    height, width = img.shape[:2]
+    left = int(width * left / 100)
+    right = int(width * right / 100)
+    top = int(height * top / 100)
+    bottom = int(height * bottom / 100)
+    return img[top : height - bottom, left : width - right]

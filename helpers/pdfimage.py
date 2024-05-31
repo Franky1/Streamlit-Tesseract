@@ -4,12 +4,37 @@ import cv2
 import numpy as np
 import pdf2image
 import streamlit as st
+from pdf2image.exceptions import PDFInfoNotInstalledError
+from pdf2image.exceptions import PDFPageCountError
+from pdf2image.exceptions import PDFPopplerTimeoutError
+from pdf2image.exceptions import PDFSyntaxError
 
-# st.set_page_config(page_title="pdf2image", page_icon="📝", layout="wide", initial_sidebar_state="collapsed")
+
+@st.cache_data(show_spinner=False)
+def pdftoimage(pdf_file: BytesIO, page: int = 1) -> tuple[np.ndarray, str]:
+    image, error = None, None
+    try:
+        image = convert(pdf_file=pdf_file, page=page)
+        if image is not None:
+            image = np.array(image)  # convert image to numpy array
+            image = img2opencv2(image)
+        else:
+            error = "Invalid PDF page selected."
+    except PDFInfoNotInstalledError:
+        error = "PDFInfoNotInstalledError: PDFInfo is not installed?"
+    except PDFPageCountError:
+        error = "PDFPageCountError: Could not determine number of pages in PDF."
+    except PDFSyntaxError:
+        error = "PDFSyntaxError: PDF is damaged/corrupted?"
+    except PDFPopplerTimeoutError:
+        error = "PDFPopplerTimeoutError: PDF conversion timed out."
+    except Exception as e:
+        error = str(e)
+    return (image, error)
 
 
-@st.cache_data
-def pdftoimage(pdf_file: BytesIO, page: int = 1) -> np.ndarray:
+@st.cache_data(show_spinner=False)
+def convert(pdf_file: BytesIO, page: int = 1) -> np.ndarray:
     images = pdf2image.convert_from_bytes(
         pdf_file=pdf_file.read(),
         dpi=300,
@@ -22,14 +47,14 @@ def pdftoimage(pdf_file: BytesIO, page: int = 1) -> np.ndarray:
     return images[0] if images else None
 
 
-# convert pillow image to opencv image
-@st.cache_data
+# convert image to opencv image
+@st.cache_data(show_spinner=False)
 def img2opencv2(pil_image: np.ndarray) -> np.ndarray:
     return cv2.cvtColor(pil_image, cv2.COLOR_RGB2BGR)
 
 
 # opencv preprocessing grayscale
-@st.cache_data
+@st.cache_data(show_spinner=False)
 def grayscale(img: np.ndarray) -> np.ndarray:
     return cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
 
@@ -43,7 +68,7 @@ if __name__ == "__main__":
         page = st.number_input("Page", min_value=1, max_value=100, value=1, step=1)
         cv2image = pdftoimage(uploaded_file, page=page)
         if cv2image is not None:
-            cv2image = np.array(cv2image)  # convert pillow image to numpy array
+            cv2image = np.array(cv2image)  # convert image to numpy array
             cv2image = img2opencv2(cv2image)
             # rotate image with streamlit slider and opencv
             angle90 = st.slider(

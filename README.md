@@ -2,11 +2,11 @@
 
 Streamlit demo project with Tesseract running on Streamlit Cloud.
 
-## Status
+## Status :construction:
 
-> Work in Progress - Not finished yet - 16.02.2023
+> Work in Progress - Not finished yet - 31.05.2024
 
-## App Usage
+## App Usage :computer:
 
 1. Upload an image with text on it
 2. Select the language
@@ -18,25 +18,18 @@ Streamlit demo project with Tesseract running on Streamlit Cloud.
 ## ToDo :pencil:
 
 - [ ] Update README
-- [ ] Update app
 - [ ] Change layout to 3 columns(?)
+- [ ] Add some more css styling
 - [ ] Cleanup of app and repo
 - [x] Test it locally with Docker
-- [x] Add more OpenCV preprocessing options for rotation
-- [ ] Add more OpenCV preprocessing options for cropping
-- [ ] Add more OpenCV preprocessing options for brightness and contrast
-- [ ] Add more OpenCV preprocessing options for image optimization
-- [ ] Add non-destructive image rotation
-- [ ] Use Pillow for image preprocessing instead of OpenCV(?)
-- [ ] Add reset `default` button for sliders and checkboxes
-- [ ] Add Ace Editor for text preview
-- [ ] Try `streamlit-option-menu` component
-- [x] Add import of pdf files with pdf2image
-- [x] Add a progress bar
 - [ ] Test it on Streamlit Cloud
 
 ## Future Ideas :bulb:
 
+- Use Pillow for image preprocessing instead of OpenCV
+  - any advantages?
+- Add Ace Editor for text preview
+  - any advantages?
 - Add other OCR engines and test them
 - Add `easyocr` and test it
   - <https://github.com/JaidedAI/EasyOCR>

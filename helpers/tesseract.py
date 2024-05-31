@@ -32,23 +32,23 @@ psm = [
 
 
 # search for tesseract binary in path
-@st.cache_resource
+@st.cache_resource(show_spinner=False)
 def find_tesseract_binary() -> str:
     return shutil.which("tesseract")
 
 
 # set tesseract path
-@st.cache_resource
+@st.cache_resource(show_spinner=False)
 def set_tesseract_path(tesseract_path: str):
     pytesseract.pytesseract.tesseract_cmd = tesseract_path
 
 
-@st.cache_resource
+@st.cache_resource(show_spinner=False)
 def set_tesseract_binary():
     set_tesseract_path(find_tesseract_binary())
 
 
-@st.cache_resource
+@st.cache_resource(show_spinner=False)
 def get_tesseract_version() -> tuple[str, str]:
     tesseract_version, error = None, None
     try:
@@ -60,7 +60,7 @@ def get_tesseract_version() -> tuple[str, str]:
     return (tesseract_version, error)
 
 
-@st.cache_resource
+@st.cache_resource(show_spinner=False)
 def get_tesseract_languages() -> tuple[list[str], str]:
     installed_languages, error = list(), None
     try:
@@ -75,13 +75,13 @@ def get_tesseract_languages() -> tuple[list[str], str]:
 
 
 # create custom oem and psm config string
-@st.cache_resource
+@st.cache_resource(show_spinner=False)
 def get_tesseract_config(oem_index: int, psm_index: int) -> str:
     custom_oem_psm_config = f"--oem {oem_index} --psm {psm_index}"
     return custom_oem_psm_config
 
 
-@st.cache_data
+@st.cache_data(show_spinner=False)
 def image_to_string(image: bytes,
                     language_short : str,
                     config : str,

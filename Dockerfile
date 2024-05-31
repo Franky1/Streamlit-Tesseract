@@ -29,8 +29,10 @@ WORKDIR /app
 COPY packages.txt packages.txt
 RUN xargs -a packages.txt apt-get install --yes
 
+RUN pip install --no-cache-dir --upgrade pip setuptools wheel uv
 COPY requirements.txt requirements.txt
-RUN pip install --no-cache-dir --upgrade -r requirements.txt
+# RUN pip install --no-cache-dir --upgrade -r requirements.txt
+RUN uv pip install --system --no-cache -r requirements.txt
 
 EXPOSE 8501
 

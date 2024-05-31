@@ -1,14 +1,12 @@
 numpy
 pandas
 streamlit
-streamlit-ace
-streamlit-elements
-streamlit-option-menu
+# streamlit-ace
 pillow
 opencv-python-headless
 pytesseract
 pdf2image
-imutils
 scipy
+# imutils
 # easyocr
 # PyMuPDF
