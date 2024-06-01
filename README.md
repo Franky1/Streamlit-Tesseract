@@ -1,10 +1,9 @@
-# Streamlit Tesseract :mag_right: :page_facing_up:
+<!-- markdownlint-disable MD026 -->
+# Streamlit Tesseract OCR :mag_right: :page_facing_up:
 
-Streamlit demo project with Tesseract running on Streamlit Cloud.
+Streamlit project with Tesseract OCR running on Streamlit Cloud.
 
-## Status :construction:
-
-> Work in Progress - Not finished yet - 31.05.2024
+[![Streamlit](https://img.shields.io/badge/Go%20To-Streamlit%20Cloud%20Application-red?logo=streamlit)](https://tesseractocr.streamlit.app/)
 
 ## App Usage :computer:
 
@@ -15,14 +14,16 @@ Streamlit demo project with Tesseract running on Streamlit Cloud.
 5. Adjust the settings or image preprocessing and run the OCR again (if needed)
 6. Download the result as a text file or copy from the text preview
 
+## Status :heavy_check_mark:
+
+> First running Streamlit application - 01.06.2024
+
 ## ToDo :pencil:
 
-- [ ] Update README
+- [ ] Update README.md
 - [ ] Change layout to 3 columns(?)
-- [ ] Add some more css styling
-- [ ] Cleanup of app and repo
-- [x] Test it locally with Docker
-- [ ] Test it on Streamlit Cloud
+- [ ] Add some more CSS styling
+- [ ] Cleanup of app and repository
 
 ## Future Ideas :bulb:
 
@@ -44,16 +45,7 @@ Streamlit demo project with Tesseract running on Streamlit Cloud.
 - Add `keras-ocr` and test it
   - <https://github.com/faustomorales/keras-ocr>
 
-## Resources :books:
-
-### Streamlit
-
-- streamlit-option-menu
-  - <https://github.com/victoryhb/streamlit-option-menu>
-- examples
-  - <https://medium.com/@siavashyasini/using-machine-learning-to-create-custom-color-palettes-acb4eeaa06aa>
-  - <https://github.com/syasini/sophisticated_palette>
-  - <https://medium.com/codex/create-a-multi-page-app-with-the-new-streamlit-option-menu-component-3e3edaf7e7ad>
+## Libraries :books:
 
 ### Tesseract
 
@@ -87,7 +79,9 @@ OpenCV is used for image preprocessing before running OCR with Tesseract.
 
 - <https://pillow.readthedocs.io/en/stable/>
 
-#### Grayscale Conversion
+## Image Preprocessing :framed_picture:
+
+### Grayscale Conversion
 
 ```python
 import cv2
@@ -100,7 +94,7 @@ m = np.array(coefficients).reshape((1,3))
 blue = cv2.transform(im, m)
 ```
 
-#### Brightness and Contrast
+### Brightness and Contrast
 
 - CLAHE (Contrast Limited Adaptive Histogram Equalization)
 - <https://www.tutorialspoint.com/how-to-change-the-contrast-and-brightness-of-an-image-using-opencv-in-python>
@@ -111,7 +105,7 @@ blue = cv2.transform(im, m)
 - <https://stackoverflow.com/questions/39308030/how-do-i-increase-the-contrast-of-an-image-in-python-opencv>
 - <https://stackoverflow.com/questions/63243202/how-to-auto-adjust-contrast-and-brightness-of-a-scanned-image-with-opencv-python>
 
-#### Image Rotation :arrows_counterclockwise:
+### Image Rotation :arrows_counterclockwise:
 
 Methods to rotate an image with different libraries.
 

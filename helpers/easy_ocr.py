@@ -1,3 +1,7 @@
+'''
+This module is curently NOT used in the main app.
+It is a helper module to test the easyocr library with streamlit in the future.
+'''
 import cv2
 import easyocr
 import numpy as np

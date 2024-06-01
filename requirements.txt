@@ -1,12 +1,11 @@
 numpy
-pandas
 streamlit
-# streamlit-ace
-pillow
 opencv-python-headless
 pytesseract
 pdf2image
 scipy
+# pillow
 # imutils
+# pandas
 # easyocr
 # PyMuPDF
