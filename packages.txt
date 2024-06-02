@@ -8,5 +8,3 @@ tesseract-ocr-por
 tesseract-ocr-ita
 tesseract-ocr-ces
 tesseract-ocr-pol
-tesseract-ocr-tur
-tesseract-ocr-rus

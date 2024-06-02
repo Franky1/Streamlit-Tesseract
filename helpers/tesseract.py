@@ -81,7 +81,7 @@ def get_tesseract_config(oem_index: int, psm_index: int) -> str:
     return custom_oem_psm_config
 
 
-@st.cache_data(show_spinner=False)
+# @st.cache_data(show_spinner=False)
 def image_to_string(image: bytes,
                     language_short : str,
                     config : str,

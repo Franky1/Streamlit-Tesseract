@@ -4,7 +4,6 @@ import helpers.constants as constants
 import helpers.opencv as opencv
 import helpers.pdfimage as pdfimage
 import helpers.tesseract as tesseract
-# import helpers.easy_ocr as easy_ocr
 
 language_options_list = list(constants.languages_sorted.values())
 
@@ -27,6 +26,33 @@ def init_tesseract():
     return tess_version
 
 
+def init_sidebar_values():
+    '''Initialize all sidebar values of buttons/sliders to default values.
+    '''
+    if "psm" not in st.session_state:
+        st.session_state.psm = tesseract.psm[3]
+    if "timeout" not in st.session_state:
+        st.session_state.timeout = 20
+    if "cGrayscale" not in st.session_state:
+        st.session_state.cGrayscale = True
+    if "cDenoising" not in st.session_state:
+        st.session_state.cDenoising = False
+    if "cDenoisingStrength" not in st.session_state:
+        st.session_state.cDenoisingStrength = 10
+    if "cThresholding" not in st.session_state:
+        st.session_state.cThresholding = False
+    if "cThresholdLevel" not in st.session_state:
+        st.session_state.cThresholdLevel = 128
+    if "cRotate90" not in st.session_state:
+        st.session_state.cRotate90 = False
+    if "angle90" not in st.session_state:
+        st.session_state.angle90 = 0
+    if "cRotateFree" not in st.session_state:
+        st.session_state.cRotateFree = False
+    if "angle" not in st.session_state:
+        st.session_state.angle = 0
+
+
 def reset_sidebar_values():
     '''Reset all sidebar values of buttons/sliders to default values.
     '''
@@ -42,10 +68,6 @@ def reset_sidebar_values():
     st.session_state.cRotateFree = False
     st.session_state.angle = 0
 
-
-# init tesseract
-tesseract_version = init_tesseract()
-
 # streamlit config
 st.set_page_config(
     page_title="Tesseract OCR",
@@ -54,29 +76,24 @@ st.set_page_config(
     initial_sidebar_state="expanded",
 )
 
+# init tesseract
+tesseract_version = init_tesseract()
+init_sidebar_values()
+
 # apply custom css
 with open(file="helpers/style.css", mode='r', encoding='utf-8') as css:
     st.markdown(f"<style>{css.read()}</style>", unsafe_allow_html=True)
 
-col_title_1, col_title_2 = st.columns(spec=2, gap="large")
-
-# title and flag columns
-with col_title_1:
-    # add streamlit title
-    st.title("Tesseract OCR :mag:")
-with col_title_2:
-    # add streamlit markdown
-    pass
+st.title(f"Tesseract OCR :mag_right: {constants.flag_string}")
 st.markdown("---")
 
 with st.sidebar:
-    st.success(f"Tesseract Version **{tesseract_version}** is installed.")
+    st.success(f"Tesseract V **{tesseract_version}** installed")
     st.header("Tesseract OCR Settings")
     st.button('Reset OCR parameters below to default values', on_click=reset_sidebar_values)
-    # st.markdown("---")
     # FIXME: OEM option does not work in tesseract 4.1.1
     # oem = st.selectbox(label="OCR Engine mode (not working)", options=constants.oem, index=3, disabled=True)
-    psm = st.selectbox(label="Page segmentation mode", options=tesseract.psm, index=3, key="psm")
+    psm = st.selectbox(label="Page segmentation mode", options=tesseract.psm, key="psm")
     timeout = st.slider(label="Tesseract OCR timeout [sec]", min_value=1, max_value=60, value=20, step=1, key="timeout")
     st.markdown("---")
     st.header("Image Preprocessing")
@@ -93,6 +110,7 @@ with st.sidebar:
     st.markdown(
         """---
 # About
+Streamlit app to extract text from images using Tesseract OCR
 ## GitHub
 <https://github.com/Franky1/Streamlit-Tesseract>
 """,
@@ -116,7 +134,7 @@ if error:
 
 raw_image, image = None, None
 
-col_upload_1, col_upload_2 = st.columns(spec=2, gap="large")
+col_upload_1, col_upload_2 = st.columns(spec=2, gap="small")
 with col_upload_2:
     st.subheader("Select Language :globe_with_meridians:")
     language = st.selectbox(
@@ -143,7 +161,6 @@ with col_upload_2:
             crop_bottom = st.slider("Bottom %", min_value=0, max_value=40, step=1, key="crop_bottom")
 
 with col_upload_1:
-    st.markdown(f"""# {constants.flag_string}""")
     # upload image
     st.subheader("Upload Image :arrow_up:")
     uploaded_file = st.file_uploader(
@@ -187,7 +204,6 @@ with col_upload_1:
                     image = opencv.rotate_scipy(img=image, angle=angle, reshape=True)
                 if cCrop:
                     image = opencv.crop(img=image, left=crop_left, right=crop_right, top=crop_top, bottom=crop_bottom)
-                image = opencv.convert_to_rgb(image)
         except Exception as e:
             st.error(str(e))
             st.stop()
@@ -195,42 +211,43 @@ with col_upload_1:
 st.markdown("---")
 
 # two column layout for image preprocessing options and image preview
-col1, col2 = st.columns(spec=2, gap="large")
+col1, col2 = st.columns(spec=2, gap="small")
 
 with col1:
-    st.subheader("Image Preview after Upload :eye:")
-    if image is not None:
-        st.image(raw_image, caption="Uploaded Image Preview after Upload", use_column_width=True)
+    st.subheader("Preview after Upload :eye:")
+    if raw_image is not None:
+        raw_image = opencv.convert_to_rgb(raw_image)  # convert BGR to RGB
+        st.image(raw_image, caption="Image Preview after Upload", use_column_width=True)
 
 with col2:
-    st.subheader("Image Preview after Preprocessing :eye:")
+    st.subheader("Preview after Preprocessing :eye:")
     if image is not None:
-        # preview image
-        st.image(image, caption="Uploaded Image Preview after Preprocessing", use_column_width=True)
+        image = opencv.convert_to_rgb(image) # convert BGR to RGB
+        st.image(image, caption="Image Preview after Preprocessing", use_column_width=True)
 
-        # add streamlit button
-        if st.button("Extract Text"):
-            # streamlit spinner
-            with st.spinner("Extracting Text..."):
-                text, error = tesseract.image_to_string(
-                    image=image,
-                    language_short=language_short,
-                    config=custom_oem_psm_config,
-                    timeout=timeout,
+if image is not None:
+    st.markdown("---")
+    st.subheader("Run OCR on preprocessed image :mag_right:")
+
+    if st.button("Extract Text"):
+        with st.spinner("Extracting Text..."):
+            text, error = tesseract.image_to_string(
+                image=image,
+                language_short=language_short,
+                config=custom_oem_psm_config,
+                timeout=timeout,
+            )
+            if error:
+                st.error(error)
+                st.stop()
+            elif text:
+                st.text_area(label="Extracted Text", value=text, height=500)
+                st.download_button(
+                    label="Download Extracted Text",
+                    data=text.encode("utf-8"),
+                    file_name=uploaded_file.name + ".txt",
+                    mime="text/plain",
                 )
-                if error:
-                    st.error(error)
-                    st.stop()
-                elif text:
-                    # add streamlit text area
-                    st.text_area(label="Extracted Text", value=text, height=500)
-                    # add streamlit download button for extracted text
-                    st.download_button(
-                        label="Download Extracted Text",
-                        data=text.encode("utf-8"),
-                        file_name="extract.txt",
-                        mime="text/plain",
-                    )
-                else:
-                    st.warning("No text was extracted.")
-                    st.stop()
+            else:
+                st.warning("No text was extracted.")
+                st.stop()

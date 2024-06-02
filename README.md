@@ -17,9 +17,9 @@ Streamlit project with Tesseract OCR running on Streamlit Cloud.
 
 ### Languages :earth_africa:
 
-Installed languages for Tesseract OCR.
+Installed languages for Tesseract OCR
 
-🇬🇧 🇪🇸 🇫🇷 🇩🇪 🇮🇹 🇵🇹 🇨🇿 🇵🇱 🇹🇷 🇷🇺
+### 🇬🇧 🇪🇸 🇫🇷 🇩🇪 🇮🇹 🇵🇹 🇨🇿 🇵🇱
 
 ## Status :heavy_check_mark:
 
@@ -27,7 +27,6 @@ Installed languages for Tesseract OCR.
 
 ## ToDo :pencil:
 
-- [ ] Change layout to 3 columns(?)
 - [ ] Add some more CSS styling
 - [ ] Cleanup of python app and repository
 
