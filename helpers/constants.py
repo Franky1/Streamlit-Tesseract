@@ -9,12 +9,7 @@ languages = {
     "por": "🇵🇹 Portuguese",
     "ces": "🇨🇿 Czech",
     "pol": "🇵🇱 Polish",
-    "nor": "🇳🇴 Norwegian",
-    "swe": "🇸🇪 Swedish",
-    "dan": "🇩🇰 Danish",
-    "ron": "🇷🇴 Romanian",
     "tur": "🇹🇷 Turkish",
-    "hun": "🇭🇺 Hungarian",
     "rus": "🇷🇺 Russian",
 }
 
@@ -33,12 +28,7 @@ languages_easyocr = {
     "por": "pt",
     "ces": "cs",
     "pol": "pl",
-    "nor": "no",
-    "swe": "sv",
-    "dan": "da",
-    "ron": "ro",
     "tur": "tr",
-    "hun": "hu",
     "rus": "ru",
 }
 
@@ -51,12 +41,7 @@ flags = {
     "por": "🇵🇹",
     "ces": "🇨🇿",
     "pol": "🇵🇱",
-    "nor": "🇳🇴",
-    "swe": "🇸🇪",
-    "dan": "🇩🇰",
-    "ron": "🇷🇴",
     "tur": "🇹🇷",
-    "hun": "🇭🇺",
     "rus": "🇷🇺",
 }
 

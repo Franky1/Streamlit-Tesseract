@@ -222,8 +222,6 @@ with col2:
                     st.error(error)
                     st.stop()
                 elif text:
-                    # TODO: move this to the whole page again
-                    # TODO: try Ace Editor for text area instead
                     # add streamlit text area
                     st.text_area(label="Extracted Text", value=text, height=500)
                     # add streamlit download button for extracted text

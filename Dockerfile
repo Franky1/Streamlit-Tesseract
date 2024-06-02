@@ -1,5 +1,5 @@
 # this base image seems to be quite similar to the streamlit cloud environment
-FROM python:3.10-slim-bullseye
+FROM python:3.11-slim-bullseye
 
 ENV PYTHONUNBUFFERED=1 \
     PYTHONDONTWRITEBYTECODE=1 \
@@ -31,12 +31,11 @@ RUN xargs -a packages.txt apt-get install --yes
 
 RUN pip install --no-cache-dir --upgrade pip setuptools wheel uv
 COPY requirements.txt requirements.txt
-# RUN pip install --no-cache-dir --upgrade -r requirements.txt
 RUN uv pip install --system --no-cache -r requirements.txt
 
 EXPOSE 8501
 
-HEALTHCHECK --interval=1m --timeout=10s \
+HEALTHCHECK --interval=1m --timeout=20s \
     CMD curl --fail http://localhost:8501/_stcore/health
 
 COPY . .

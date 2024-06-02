@@ -10,20 +10,26 @@ Streamlit project with Tesseract OCR running on Streamlit Cloud.
 1. Upload an image with text on it
 2. Select the language
 3. Select the image preprocessing options (if needed) and check the result in the preview
-4. Run the OCR and check the result in the text preview
-5. Adjust the settings or image preprocessing and run the OCR again (if needed)
-6. Download the result as a text file or copy from the text preview
+4. Crop the image to the text area (if needed)
+5. Run the OCR and check the result in the text preview
+6. Adjust the settings or image preprocessing and run the OCR again (if needed)
+7. Download the result as a text file or copy from the text preview
+
+### Languages :earth_africa:
+
+Installed languages for Tesseract OCR.
+
+🇬🇧 🇪🇸 🇫🇷 🇩🇪 🇮🇹 🇵🇹 🇨🇿 🇵🇱 🇹🇷 🇷🇺
 
 ## Status :heavy_check_mark:
 
-> First running Streamlit application - 01.06.2024
+> Streamlit application is working - 02.06.2024
 
 ## ToDo :pencil:
 
-- [ ] Update README.md
 - [ ] Change layout to 3 columns(?)
 - [ ] Add some more CSS styling
-- [ ] Cleanup of app and repository
+- [ ] Cleanup of python app and repository
 
 ## Future Ideas :bulb:
 
