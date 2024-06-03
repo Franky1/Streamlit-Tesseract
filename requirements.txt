@@ -1,5 +1,6 @@
 numpy
 streamlit
+streamlit-cropper
 opencv-python-headless
 pytesseract
 pdf2image

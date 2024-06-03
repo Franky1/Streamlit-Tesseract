@@ -23,11 +23,14 @@ Installed languages for Tesseract OCR
 
 ## Status :heavy_check_mark:
 
-> Streamlit application is working - 02.06.2024
+> Streamlit application is working - 04.06.2024
 
 ## ToDo :pencil:
 
-- [ ] Add some more CSS styling
+- [ ] Change layout of the app
+- [ ] Change checkboxes to toggle buttons
+- [ ] Add cropping functionality: <https://github.com/turner-anderson/streamlit-cropper>
+- [ ] Add more CSS styling
 - [ ] Cleanup of python app and repository
 
 ## Future Ideas :bulb:
